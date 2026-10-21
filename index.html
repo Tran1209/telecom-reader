@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="vi" data-theme="light">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Kỹ Thuật Truyền Thông - Đọc & Dịch Báo Cáo Chuyên Ngành CoAP</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@400;500;600;700;800&family=Merriweather:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+  <!-- App Header -->
+  <header class="app-header">
+    <div class="header-inner">
+      <div class="brand-wrapper">
+        <div class="brand-icon">📡</div>
+        <div>
+          <h1 class="brand-title">Telecom Bilingual Reader</h1>
+          <div class="brand-subtitle">Kỹ Thuật Truyền Thông • Báo Cáo Chuyên Ngành IoT</div>
+        </div>
+      </div>
+
+      <!-- Paper Switcher Tabs -->
+      <nav class="paper-tabs">
+        <button class="tab-btn active" id="tabPaper1" onclick="switchPaper('paper1')">
+          <span>📄 Bài 1: pCoCoA</span>
+          <span class="badge-tag">Ad Hoc Networks</span>
+        </button>
+        <button class="tab-btn" id="tabPaper2" onclick="switchPaper('paper2')">
+          <span>📄 Bài 2: CoAP for IoT</span>
+          <span class="badge-tag">IEEE Comms</span>
+        </button>
+        <button class="tab-btn" id="tabGlossary" onclick="showGlossaryView()">
+          <span>📖 Từ điển A-Z</span>
+        </button>
+        <button class="tab-btn" id="tabComparison" onclick="showComparisonView()">
+          <span>⚖️ So sánh giải thuật</span>
+        </button>
+        <button class="tab-btn" id="tabSimulator" onclick="showSimulatorView()">
+          <span>🧮 Mô phỏng tính RTO</span>
+        </button>
+      </nav>
+
+      <!-- Quick Controls -->
+      <div class="header-controls">
+        <button class="control-btn" id="btnThemeToggle" onclick="toggleTheme()" title="Đổi giao diện Sáng / Tối / Sepia">
+          <span id="themeIcon">🌓</span> Giao diện
+        </button>
+        <button class="control-btn" onclick="adjustFontSize(-1)" title="Giảm cỡ chữ">A-</button>
+        <button class="control-btn" onclick="adjustFontSize(1)" title="Tăng cỡ chữ">A+</button>
+        <button class="control-btn" onclick="openSavedWordsModal()" title="Xem sổ tay từ vựng">
+          ⭐ Đã lưu (<span id="savedWordsCount">0</span>)
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mode Bar -->
+  <div class="mode-bar">
+    <div class="mode-bar-inner">
+      <div class="mode-selector">
+        <span>Chế độ dịch văn nghĩa:</span>
+        <div class="mode-pills">
+          <button class="pill-btn active" id="modeHover" onclick="setTranslationMode('hover')">
+            🎯 Chạm / Rê chuột hiện nghĩa
+          </button>
+          <button class="pill-btn" id="modeDual" onclick="setTranslationMode('dual')">
+            📜 Xem song ngữ song song
+          </button>
+          <button class="pill-btn" id="modeInline" onclick="setTranslationMode('inline')">
+            📖 Hiện nghĩa dưới dòng
+          </button>
+        </div>
+      </div>
+
+      <div class="reading-hint">
+        <span>💡 <strong>Hướng dẫn:</strong> Rê chuột/chạm vào câu để xem dịch nghĩa Kỹ thuật Truyền thông; Bấm vào 1 từ tiếng Anh bất kỳ để tra nghĩa chuyên ngành + nghe phát âm!</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Main Layout -->
+  <main class="main-layout" id="mainContainer">
+    
+    <!-- Left Sidebar: Table of Contents & Metadata -->
+    <aside class="left-sidebar">
+      <div class="sidebar-card">
+        <div class="sidebar-heading">
+          <span>Mục lục bài báo</span>
+          <span id="sectionCountBadge">8 mục</span>
+        </div>
+        <ul class="toc-list" id="tocContainer">
+          <!-- Dynamically generated TOC -->
+        </ul>
+      </div>
+
+      <div class="telecom-meta-box">
+        <div class="meta-title">
+          <span>📡 Thông số Kỹ thuật</span>
+        </div>
+        <div class="meta-item"><strong>Môn học:</strong> Kỹ Thuật Truyền Thông</div>
+        <div class="meta-item"><strong>Giao thức:</strong> CoAP (RFC 7252) trên UDP</div>
+        <div class="meta-item"><strong>Mạng:</strong> LLN, IEEE 802.15.4, 6LoWPAN</div>
+        <div class="meta-item"><strong>Trọng tâm:</strong> Congestion Control & RTO</div>
+        <div class="meta-item"><strong>Bộ điều khiển:</strong> CoAP BEB, CoCoA+, pCoCoA</div>
+      </div>
+
+      <div class="sidebar-card">
+        <div class="sidebar-heading">
+          <span>Tìm kiếm nhanh</span>
+        </div>
+        <input type="text" id="quickSearchInput" placeholder="Tìm từ khóa (RTT, RTO, packet...)" 
+               style="width: 100%; padding: 0.45rem 0.65rem; border: 1px solid var(--border-color); border-radius: var(--radius-sm); font-size: 0.8rem; background: var(--bg-surface); color: var(--text-primary);"
+               oninput="handleQuickSearch(this.value)">
+      </div>
+    </aside>
+
+    <!-- Center Column: Original English Academic Paper Text -->
+    <article class="paper-content" id="paperContentArea">
+      <!-- Dynamically filled with Paper content -->
+    </article>
+
+    <!-- Right Sidebar: Interactive Word & Sentence Inspector -->
+    <aside class="right-sidebar">
+      
+      <!-- Word Dictionary Inspector -->
+      <div class="inspector-card" id="wordInspectorCard">
+        <div class="inspector-header">
+          <div class="inspector-title">
+            <span>🔍 Tra từ chuyên ngành</span>
+          </div>
+          <span class="word-pos" id="inspectWordPos">Noun</span>
+        </div>
+
+        <div class="word-title-row">
+          <div>
+            <div class="word-name" id="inspectWordName">congestion</div>
+            <div class="word-ipa" id="inspectWordIpa">/kənˈdʒes.tʃən/</div>
+          </div>
+          <button class="audio-btn" onclick="speakCurrentWord()" title="Nghe phát âm chuẩn">🔊</button>
+        </div>
+
+        <div class="definition-section">
+          <div class="def-box telecom">
+            <div class="def-label">⚡ Kỹ Thuật Truyền Thông:</div>
+            <div id="inspectTelecomDef">
+              Hiện tượng tắc nghẽn mạng: Xảy ra khi lưu lượng nạp vào mạng vượt quá dung lượng truyền dẫn của kênh hoặc bộ đệm của nút mạng, gây ra trễ hàng đợi, tràn bộ đệm và mất gói tin hàng loạt.
+            </div>
+          </div>
+
+          <div class="def-box general">
+            <div class="def-label">📚 Nghĩa thông dụng:</div>
+            <div id="inspectGeneralDef">
+              Sự ùn tắc, ứ nghẽn (giao thông, mạng dữ liệu).
+            </div>
+          </div>
+
+          <div class="example-box" id="inspectExample">
+            "Network congestion leads to packet loss and high transmission delays."
+          </div>
+        </div>
+
+        <div style="display: flex; gap: 0.5rem; margin-top: 0.25rem;">
+          <button class="control-btn" style="flex: 1;" onclick="saveCurrentWord()">
+            ⭐ Lưu từ vựng
+          </button>
+          <button class="control-btn" onclick="copyCurrentWord()">
+            📋 Copy
+          </button>
+        </div>
+      </div>
+
+      <!-- Current Sentence Translation Card -->
+      <div class="inspector-card" id="sentenceInspectorCard">
+        <div class="inspector-header">
+          <div class="inspector-title">
+            <span>📝 Văn nghĩa câu đang chọn</span>
+          </div>
+          <span class="badge-tag">Sát nghĩa KTTT</span>
+        </div>
+
+        <div style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;" id="sidebarSentenceEn">
+          "The Constrained Application Protocol (CoAP) is an IETF standard application protocol for the future Internet of Things (IoT)."
+        </div>
+
+        <div style="font-size: 0.95rem; font-weight: 600; color: var(--primary); line-height: 1.5;" id="sidebarSentenceVi">
+          Giao thức Ứng dụng Bị ràng buộc (CoAP) là một giao thức tầng ứng dụng tiêu chuẩn của IETF dành cho mạng lưới Vạn vật kết nối Internet (IoT) trong tương lai.
+        </div>
+      </div>
+
+    </aside>
+
+  </main>
+
+  <!-- Floating Sentence Popover (Follows hover) -->
+  <div class="sentence-popover" id="sentencePopover">
+    <div class="popover-label">
+      <span>📡 Bản dịch Kỹ thuật Truyền thông:</span>
+    </div>
+    <div class="popover-en" id="popoverEnText"></div>
+    <div class="popover-vi" id="popoverViText"></div>
+  </div>
+
+  <!-- Bottom Sentence Dock (Smooth slide-in) -->
+  <div class="sentence-dock" id="sentenceDock">
+    <div class="dock-content">
+      <span class="dock-badge">Dịch sát nghĩa Kỹ Thuật Truyền Thông</span>
+      <div class="dock-vi" id="dockViText">Rê chuột hoặc chạm vào bất kỳ câu nào để xem bản dịch tiếng Việt chuyên ngành chính xác tại đây.</div>
+      <div class="dock-en" id="dockEnText">Hover or tap on any English sentence to inspect its professional translation.</div>
+    </div>
+    <button class="dock-close" onclick="closeDock()" title="Đóng thanh dịch đáy">✕</button>
+  </div>
+
+  <!-- Saved Words Modal -->
+  <div class="modal-backdrop" id="savedWordsModal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h2 class="modal-title">⭐ Sổ tay từ vựng chuyên ngành đã lưu</h2>
+        <button class="dock-close" onclick="closeSavedWordsModal()">✕</button>
+      </div>
+      <p style="font-size: 0.85rem; color: var(--text-muted);">Các thuật ngữ và từ vựng môn Kỹ Thuật Truyền Thông bạn đã lưu trong quá trình đọc bài báo.</p>
+      <div id="savedWordsListContainer" style="display: flex; flex-direction: column; gap: 0.75rem; max-height: 50vh; overflow-y: auto;">
+        <!-- Filled dynamically -->
+      </div>
+      <div style="display: flex; justify-content: flex-end; gap: 0.5rem; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+        <button class="control-btn" onclick="clearAllSavedWords()">Xóa tất cả</button>
+        <button class="control-btn active" onclick="closeSavedWordsModal()">Đóng lại</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Load Data and Application Logic -->
+  <script src="data_paper1.js"></script>
+  <script src="data_paper2.js"></script>
+  <script src="dictionary.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
