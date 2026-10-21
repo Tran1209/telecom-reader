@@ -1,4 +1,4 @@
-// Complete Academic Dataset for Paper 2 (IEEE Comms Mag 2016)
+// Complete Academic Dataset for Paper 2 (IEEE Communications Magazine 2016)
 const PAPER_2_DATA = {
   "id": "paper2",
   "journal_header": "IEEE COMMUNICATIONS MAGAZINE • JULY 2016 • PP. 154–160",
@@ -215,6 +215,38 @@ const PAPER_2_DATA = {
       ]
     },
     {
+      "id": "p2_sec_table_features",
+      "title": "IV. FEATURES OF CONGESTION CONTROL MECHANISMS",
+      "title_vi": "IV. BẢNG ĐẶC TÍNH SO SÁNH CÁC CƠ CHẾ ĐIỀU KHIỂN TẮC NGHẼN",
+      "badge": "Section IV",
+      "paragraphs": [
+        {
+          "id": "p2_feat_p1",
+          "sentences": [
+            {
+              "en": "Table I provides an overview of the key features of the evaluated congestion control mechanisms for IoT.",
+              "vi": "Bảng I (Table I) cung cấp một cái nhìn tổng quan về các đặc tính cốt lõi của các cơ chế điều khiển tắc nghẽn được đánh giá trong môi trường IoT.",
+              "terms": [
+                "Table I",
+                "congestion control mechanisms",
+                "IoT"
+              ]
+            }
+          ]
+        }
+      ],
+      "tables": [
+        {
+          "id": "p2_table1",
+          "title": "TABLE I: OVERVIEW OF CONGESTION CONTROL MECHANISMS",
+          "subtitle": "BẢNG SO SÁNH CÁC GIẢI THUẬT ĐIỀU KHIỂN TẮC NGHẼN COAP (IEEE COMM. MAG)",
+          "img_src": "assets/p2_table1.png",
+          "caption": "Table I. Overview of the features of the different congestion control mechanisms evaluated in the article.",
+          "html": "<table class=\"academic-html-table\" style=\"width:100%; border-collapse:collapse; font-size:0.8rem; text-align:left; margin-top:0.5rem;\">\n<thead>\n  <tr style=\"border-top:2px solid var(--text-primary); border-bottom:1.5px solid var(--text-primary);\">\n    <th style=\"padding:6px 8px;\">Mechanism</th>\n    <th style=\"padding:6px 8px;\">RTO Initialization</th>\n    <th style=\"padding:6px 8px;\">Backoff Factor</th>\n    <th style=\"padding:6px 8px;\">RTO Aging</th>\n  </tr>\n</thead>\n<tbody>\n  <tr style=\"border-bottom:1px solid var(--border-color);\"><td style=\"padding:5px 8px; font-weight:700;\">Default CoAP</td><td style=\"padding:5px 8px;\">Random [2, 3] s</td><td style=\"padding:5px 8px;\">Fixed (x2)</td><td style=\"padding:5px 8px; color:var(--text-muted);\">None</td></tr>\n  <tr style=\"border-bottom:1px solid var(--border-color); background:rgba(2,132,199,0.05);\"><td style=\"padding:5px 8px; font-weight:700; color:var(--primary);\">CoCoA</td><td style=\"padding:5px 8px;\">Strong & Weak SRTT</td><td style=\"padding:5px 8px; font-weight:600;\">VBF (1.5 / 2.0 / 3.0)</td><td style=\"padding:5px 8px;\">Yes (Halving towards 2s)</td></tr>\n  <tr style=\"border-bottom:1px solid var(--border-color);\"><td style=\"padding:5px 8px; font-weight:700;\">CoCoA-S</td><td style=\"padding:5px 8px;\">Strong SRTT only</td><td style=\"padding:5px 8px;\">VBF</td><td style=\"padding:5px 8px;\">Yes</td></tr>\n  <tr style=\"border-bottom:2px solid var(--text-primary);\"><td style=\"padding:5px 8px; font-weight:700;\">Basic RTO</td><td style=\"padding:5px 8px;\">RFC 6298 TCP RTO</td><td style=\"padding:5px 8px;\">Fixed (x2)</td><td style=\"padding:5px 8px; color:var(--text-muted);\">None</td></tr>\n</tbody>\n</table>"
+        }
+      ]
+    },
+    {
       "id": "p2_sec_testbeds_results",
       "title": "V-VI. TESTBEDS & EXPERIMENTAL RESULTS",
       "title_vi": "V-VI. HỆ THỐNG THỰC NGHIỆM VÀ KẾT QUẢ PHẦN CỨNG",
@@ -269,11 +301,11 @@ const PAPER_2_DATA = {
           "images": [
             {
               "src": "assets/p2_fig3.png",
-              "caption": "Fig. 3. Average Settling Times in burst traffic scenario."
+              "caption": "Fig. 3. Average settling time required by algorithms to adapt to changing network conditions."
             },
             {
               "src": "assets/p2_fig4.png",
-              "caption": "Fig. 4. Probability Mass Function (PMF) and Jain's Fairness Index (FI) in FlockLab."
+              "caption": "Fig. 4. Jain's Fairness Index across multiple concurrent client nodes."
             }
           ]
         }
@@ -281,22 +313,28 @@ const PAPER_2_DATA = {
     },
     {
       "id": "p2_sec_conclusion",
-      "title": "VII. CONCLUSIONS",
-      "title_vi": "VII. KẾT LUẬN",
+      "title": "VII. CONCLUSION & FUTURE DIRECTIONS",
+      "title_vi": "VII. KẾT LUẬN VÀ ĐỊNH HƯỚNG TƯƠNG LAI",
       "badge": "Section VII",
       "paragraphs": [
         {
           "id": "p2_conc_1",
           "sentences": [
             {
-              "en": "Through its combination of weak RTT estimation, VBF backoff, and aging, CoCoA delivers superior throughput, shorter settling times, and high network fairness on real-world constrained platforms.",
-              "vi": "Nhờ sự kết hợp tinh tế giữa cơ chế ước lượng RTT yếu, hệ số thoái lui VBF và kỹ thuật lão hóa RTO, CoCoA mang lại thông lượng vượt bậc, thời gian lắng cực ngắn và bảo toàn tính công bằng mạng trên các nền tảng thiết bị thực tế.",
+              "en": "In this article, we presented the main design features of CoCoA and evaluated its performance on two real testbeds.",
+              "vi": "Trong bài báo này, chúng tôi đã trình bày các đặc tính thiết kế cốt lõi của CoCoA và đánh giá hiệu năng thực nghiệm của nó trên hai hệ thống phần cứng thật.",
               "terms": [
-                "weak RTT",
-                "VBF",
-                "aging",
-                "throughput",
-                "fairness"
+                "CoCoA",
+                "testbeds"
+              ]
+            },
+            {
+              "en": "The experimental results confirmed that CoCoA outperforms default CoAP across all evaluated network conditions and traffic loads.",
+              "vi": "Các kết quả thực nghiệm xác nhận CoCoA vượt trội hoàn toàn so với CoAP mặc định trên tất cả các điều kiện mạng và tải lưu lượng khảo sát.",
+              "terms": [
+                "CoCoA",
+                "default CoAP",
+                "traffic loads"
               ]
             }
           ]

@@ -140,53 +140,22 @@ const PAPER_1_DATA = {
               ]
             },
             {
-              "en": "IoT systems are built on top of IoT devices that collect data and interact with the physical environment.",
-              "vi": "Hệ thống IoT được xây dựng dựa trên các thiết bị IoT có chức năng thu thập dữ liệu và tương tác trực tiếp với môi trường vật lý.",
+              "en": "In this context, the IETF is specifying standard protocols to integrate IoT smart objects into the Internet, with the IPv6 over Low power Wireless Personal Area Networks (6LoWPAN) adaptation layer and the Constrained Application Protocol (CoAP).",
+              "vi": "Trong bối cảnh này, IETF đang đặc tả các giao thức tiêu chuẩn để tích hợp các vật thể thông minh IoT vào mạng Internet, nổi bật là tầng thích ứng IPv6 qua Mạng cá nhân không dây công suất thấp (6LoWPAN) và Giao thức Ứng dụng Bị ràng buộc (CoAP).",
               "terms": [
-                "IoT devices"
+                "6LoWPAN",
+                "CoAP",
+                "adaptation layer",
+                "smart objects"
               ]
             },
             {
-              "en": "IoT devices are usually cheap, battery-powered devices, with limited computation capabilities.",
-              "vi": "Các thiết bị IoT thường là những thiết bị giá rẻ, hoạt động bằng pin và có năng lực xử lý tính toán rất hạn chế.",
+              "en": "Specifically, CoAP has been designed as a specialized web transfer protocol for use with constrained nodes and constrained networks.",
+              "vi": "Cụ thể, CoAP được thiết kế như một giao thức truyền tải web chuyên biệt dùng cho các nút mạng bị ràng buộc tài nguyên và các mạng có dung lượng eo hẹp.",
               "terms": [
-                "battery-powered",
-                "computation capabilities"
-              ]
-            },
-            {
-              "en": "Those devices are equipped with low power transceivers that, however, allow forming Low Power and Lossy Networks (LLN), characterized by possibly large packet error rates, and low throughput.",
-              "vi": "Những thiết bị này được trang bị các bộ thu phát công suất thấp tạo nên Mạng năng lượng thấp và tổn thất cao (Low Power and Lossy Networks - LLN), có đặc tính tỷ lệ lỗi gói cao và thông lượng thấp.",
-              "terms": [
-                "transceivers",
-                "LLN",
-                "packet error rates",
-                "throughput"
-              ]
-            },
-            {
-              "en": "Due to these characteristics, new communication protocols tailored for constrained devices operating in lossy networks are required.",
-              "vi": "Do các đặc tính này, cần phải có các giao thức truyền thông mới được thiết kế riêng cho các thiết bị hạn chế tài nguyên hoạt động trong mạng tổn hao.",
-              "terms": [
-                "communication protocols",
-                "constrained devices",
-                "lossy networks"
-              ]
-            },
-            {
-              "en": "To this aim, IETF defined a communication protocol stack for IoT devices.",
-              "vi": "Nhằm mục tiêu này, IETF đã định nghĩa một ngăn xếp giao thức truyền thông chuyên dụng cho thiết bị IoT.",
-              "terms": [
-                "IETF",
-                "protocol stack"
-              ]
-            },
-            {
-              "en": "In particular, the IETF CoRE Working Group standardized the Constrained Application Protocol (CoAP) [1], which allows applications to exchange information with IoT devices.",
-              "vi": "Cụ thể, Nhóm công tác CoRE của IETF đã chuẩn hóa Giao thức Ứng dụng Bị ràng buộc (CoAP) [RFC 7252], cho phép các ứng dụng trao đổi thông tin với thiết bị IoT theo phương thức RESTful gọn nhẹ.",
-              "terms": [
-                "CoRE Working Group",
-                "CoAP"
+                "web transfer protocol",
+                "constrained nodes",
+                "constrained networks"
               ]
             }
           ]
@@ -195,28 +164,11 @@ const PAPER_1_DATA = {
           "id": "p1_intro_2",
           "sentences": [
             {
-              "en": "Considering the limited capabilities of nodes and the limited amount of bandwidth available in LLNs, congestion control is crucial to ensure proper and timely delivery of data.",
-              "vi": "Xét đến năng lực hạn chế của các nút mạng và lượng băng thông eo hẹp trong các mạng LLN, việc điều khiển tắc nghẽn là tối quan trọng nhằm bảo đảm phân phối dữ liệu chính xác và đúng thời hạn.",
+              "en": "As constrained devices typically operate using low power, low-bandwidth, and lossy communication technologies (e.g., IEEE 802.15.4), CoAP runs on top of UDP.",
+              "vi": "Do các thiết bị bị ràng buộc thường hoạt động bằng các công nghệ truyền thông công suất thấp, băng thông hẹp và nhiều tổn thất (ví dụ chuẩn IEEE 802.15.4), CoAP chạy trên nền giao thức UDP.",
               "terms": [
-                "bandwidth",
-                "LLN",
-                "congestion control"
-              ]
-            },
-            {
-              "en": "In traditional networks, application data is usually transported by the Transmission Control Protocol (TCP), which includes a congestion control mechanism.",
-              "vi": "Trong các mạng truyền thống, dữ liệu ứng dụng thường được truyền tải bằng Giao thức Điều khiển Truyền vận (TCP) vốn đã tích hợp sẵn cơ chế kiểm soát tắc nghẽn.",
-              "terms": [
-                "TCP",
-                "congestion control mechanism"
-              ]
-            },
-            {
-              "en": "In LLNs, instead, CoAP employs the User Datagram Protocol (UDP), which does not provide any congestion control mechanism.",
-              "vi": "Trái lại, trong mạng LLN, CoAP sử dụng Giao thức Datagram Người dùng (UDP) – một giao thức không hề có cơ chế điều khiển tắc nghẽn nào.",
-              "terms": [
-                "LLNs",
-                "CoAP",
+                "lossy",
+                "IEEE 802.15.4",
                 "UDP"
               ]
             },
@@ -398,6 +350,45 @@ const PAPER_1_DATA = {
               ]
             }
           ]
+        },
+        {
+          "id": "p1_cocoa_backoff_aging",
+          "title": "B-C. Backoff Policy & Information Aging",
+          "sentences": [
+            {
+              "en": "CoCoA+ computes the new RTO value for retransmissions according to a Variable Backoff Factor (VBF) that depends on the initial RTO value RTOinit: RTOnew = RTOprevious * VBF(RTOinit).",
+              "vi": "CoCoA+ tính toán giá trị RTO mới cho các lần truyền lại theo Hệ số Thoái lui Khả biến VBF phụ thuộc vào RTO ban đầu RTOinit: RTOnew = RTOprevious * VBF(RTOinit).",
+              "terms": [
+                "VBF",
+                "Variable Backoff Factor",
+                "RTOinit"
+              ]
+            },
+            {
+              "en": "The VBF factor is set according to RTOinit to avoid frequent retransmissions in a short time when the RTO value is low, and to avoid long delays when RTO is large.",
+              "vi": "Hệ số VBF được điều chỉnh theo RTOinit nhằm tránh truyền lại quá dồn dập khi RTO nhỏ, đồng thời tránh trễ chờ đợi quá dài khi RTO lớn.",
+              "terms": [
+                "RTOinit",
+                "VBF"
+              ]
+            },
+            {
+              "en": "Information aging is applied when RTO updates are not received for a certain time: if RTOoverall is larger than 2s and idle for > 30s, RTOoverall = (2 + RTOoverall) / 2.",
+              "vi": "Cơ chế lão hóa thông tin được áp dụng khi không nhận được mẫu RTT mới sau một thời gian: nếu RTOoverall > 2s và bị 'treo' quá 30s, RTOoverall được kéo lùi dần theo công thức (2 + RTOoverall) / 2.",
+              "terms": [
+                "Information aging",
+                "RTOoverall"
+              ]
+            },
+            {
+              "en": "If RTOoverall is less than 1s and idle for 16 times its actual value, it is reset back to 1s.",
+              "vi": "Nếu RTOoverall nhỏ hơn 1s và không được cập nhật trong khoảng thời gian gấp 16 lần giá trị thực tế của nó, RTOoverall sẽ được đặt lại về 1s.",
+              "terms": [
+                "RTOoverall",
+                "reset"
+              ]
+            }
+          ]
         }
       ],
       "equations": [
@@ -429,6 +420,169 @@ const PAPER_1_DATA = {
           "num": "7",
           "code": "RTO_overall = (2 + RTO_overall) / 2"
         }
+      ],
+      "tables": [
+        {
+          "id": "p1_table1",
+          "title": "TABLE I: CONGESTION CONTROL ALGORITHMS",
+          "subtitle": "BẢNG SO SÁNH CÁC THUẬT TOÁN ĐIỀU KHIỂN TẮC NGHẼN CHO COAP",
+          "img_src": "assets/p1_table1.png",
+          "caption": "Table I. Summary of congestion control algorithms proposed in literature for CoAP: CoAP, CoCoA, CoCoA-S, CoCoA-E, 4-state-strong.",
+          "html": "<table class=\"academic-html-table\" style=\"width:100%; border-collapse:collapse; font-size:0.8rem; text-align:left; margin-top:0.5rem;\">\n<thead>\n  <tr style=\"border-top:2px solid var(--text-primary); border-bottom:1.5px solid var(--text-primary);\">\n    <th style=\"padding:6px 8px;\">Name</th>\n    <th style=\"padding:6px 8px;\">Backoff Method</th>\n    <th style=\"padding:6px 8px;\">RTT Estimators</th>\n    <th style=\"padding:6px 8px;\">RTO aging</th>\n    <th style=\"padding:6px 8px;\">Derived from</th>\n  </tr>\n</thead>\n<tbody>\n  <tr style=\"border-bottom:1px solid var(--border-color);\">\n    <td style=\"padding:5px 8px; font-weight:700;\">CoAP</td>\n    <td style=\"padding:5px 8px;\">BBF (BEB)</td>\n    <td style=\"padding:5px 8px; color:var(--text-muted);\">None</td>\n    <td style=\"padding:5px 8px;\">No</td>\n    <td style=\"padding:5px 8px; color:var(--text-muted);\">None</td>\n  </tr>\n  <tr style=\"border-bottom:1px solid var(--border-color); background:rgba(2,132,199,0.05);\">\n    <td style=\"padding:5px 8px; font-weight:700; color:var(--primary);\">CoCoA</td>\n    <td style=\"padding:5px 8px;\">VBF</td>\n    <td style=\"padding:5px 8px;\">Strong & Weak</td>\n    <td style=\"padding:5px 8px;\">Yes</td>\n    <td style=\"padding:5px 8px;\">LinuxRTO</td>\n  </tr>\n  <tr style=\"border-bottom:1px solid var(--border-color);\">\n    <td style=\"padding:5px 8px; font-weight:700;\">CoCoA-S</td>\n    <td style=\"padding:5px 8px;\">VBF</td>\n    <td style=\"padding:5px 8px;\">Strong</td>\n    <td style=\"padding:5px 8px;\">Yes</td>\n    <td style=\"padding:5px 8px;\">CoCoA</td>\n  </tr>\n  <tr style=\"border-bottom:1px solid var(--border-color);\">\n    <td style=\"padding:5px 8px; font-weight:700;\">CoCoA-E</td>\n    <td style=\"padding:5px 8px;\">VBF</td>\n    <td style=\"padding:5px 8px;\">Strong & Weak</td>\n    <td style=\"padding:5px 8px;\">Yes</td>\n    <td style=\"padding:5px 8px;\">CoCoA & Eifel</td>\n  </tr>\n  <tr style=\"border-bottom:2px solid var(--text-primary);\">\n    <td style=\"padding:5px 8px; font-weight:700;\">4-state-strong</td>\n    <td style=\"padding:5px 8px;\">VBF</td>\n    <td style=\"padding:5px 8px;\">Four estimators</td>\n    <td style=\"padding:5px 8px;\">Yes</td>\n    <td style=\"padding:5px 8px;\">CoCoA</td>\n  </tr>\n</tbody>\n</table>"
+        }
+      ]
+    },
+    {
+      "id": "p1_sec_related_work",
+      "title": "III. RELATED WORK",
+      "title_vi": "III. CÁC CÔNG TRÌNH NGHIÊN CỨU LIÊN QUAN",
+      "badge": "Section III",
+      "paragraphs": [
+        {
+          "id": "p1_related_p1",
+          "sentences": [
+            {
+              "en": "Many recent works focused on evaluating the performance of CoCoA per se.",
+              "vi": "Nhiều công trình nghiên cứu gần đây đã tập trung vào việc đánh giá hiệu năng của bản thân thuật toán CoCoA.",
+              "terms": [
+                "evaluating",
+                "performance",
+                "CoCoA"
+              ]
+            },
+            {
+              "en": "In [4], for instance, CoCoA is evaluated in a typical large-scale IoT scenario in which GPRS is employed to connect IoT nodes.",
+              "vi": "Chẳng hạn trong [4], CoCoA được đánh giá trong một kịch bản IoT quy mô lớn điển hình sử dụng mạng di động GPRS để kết nối các nút IoT.",
+              "terms": [
+                "IoT scenario",
+                "GPRS",
+                "IoT nodes"
+              ]
+            },
+            {
+              "en": "The authors compared CoCoA against other congestion control mechanisms defined for TCP applications.",
+              "vi": "Các tác giả đã so sánh đối chứng CoCoA với các cơ chế điều khiển tắc nghẽn khác được định nghĩa cho các ứng dụng nền TCP.",
+              "terms": [
+                "congestion control",
+                "TCP applications"
+              ]
+            },
+            {
+              "en": "Results showed that CoCoA performs equally or better than TCP-based algorithms.",
+              "vi": "Kết quả chỉ ra rằng CoCoA mang lại hiệu năng tương đương hoặc vượt trội hơn so với các giải thuật dựa trên TCP.",
+              "terms": [
+                "TCP-based algorithms",
+                "performance"
+              ]
+            },
+            {
+              "en": "Similar conclusions were drawn in [5], where the authors compared CoCoA to other TCP-based congestion control mechanisms on an emulated Zigbee network.",
+              "vi": "Các kết luận tương tự cũng được rút ra trong [5], nơi các tác giả so sánh CoCoA với các cơ chế kiểm soát tắc nghẽn TCP trên một mạng Zigbee mô phỏng.",
+              "terms": [
+                "Zigbee network",
+                "congestion control"
+              ]
+            },
+            {
+              "en": "In [6], the authors evaluated CoCoA by means of simulations considering different traffic patterns.",
+              "vi": "Trong [6], các tác giả đánh giá CoCoA bằng phương pháp mô phỏng xem xét các mô hình lưu lượng truyền dẫn khác nhau.",
+              "terms": [
+                "simulations",
+                "traffic patterns"
+              ]
+            },
+            {
+              "en": "Similar to our work, the authors highlighted the poor performance of CoCoA with bursty traffic due to the improper selection of the retransmission timeout value.",
+              "vi": "Tương đồng với công trình của chúng tôi, các tác giả đã làm nổi bật hiệu năng kém cỏi của CoCoA khi gặp lưu lượng dạng bùng nổ (bursty traffic) do việc chọn giá trị thời gian chờ truyền lại (RTO) không hợp lý.",
+              "terms": [
+                "bursty traffic",
+                "retransmission timeout",
+                "RTO"
+              ]
+            }
+          ]
+        },
+        {
+          "id": "p1_related_p2",
+          "sentences": [
+            {
+              "en": "Recently, other works proposed modifications to CoCoA.",
+              "vi": "Gần đây, các nghiên cứu khác đã đề xuất những cải tiến sửa đổi cho CoCoA.",
+              "terms": [
+                "modifications",
+                "CoCoA"
+              ]
+            },
+            {
+              "en": "In [7] the authors proposed '4-states-strong', a modification to CoCoA that introduces a more complex RTT estimator to distinguish between wireless losses and congestion losses.",
+              "vi": "Trong [7], các tác giả đề xuất giải thuật '4-states-strong' – một biến thể của CoCoA đưa vào bộ ước lượng RTT phức tạp hơn nhằm phân biệt giữa mất gói do lỗi đường truyền vô tuyến và mất gói do nghẽn mạng.",
+              "terms": [
+                "4-states-strong",
+                "RTT estimator",
+                "wireless losses",
+                "congestion losses"
+              ]
+            },
+            {
+              "en": "Results showed an improvement of the performance in networks where the loss rate is particularly high.",
+              "vi": "Kết quả cho thấy sự cải thiện hiệu năng rõ rệt trong các mạng có tỷ lệ tổn hao gói tin đặc biệt cao.",
+              "terms": [
+                "loss rate",
+                "performance"
+              ]
+            },
+            {
+              "en": "In [14], instead, authors proposed CoCoA-E, a modified version of CoCoA based on the Eifel retransmission timer.",
+              "vi": "Trong khi đó, ở [14], các tác giả đề xuất CoCoA-E – một phiên bản sửa đổi của CoCoA dựa trên bộ định thời truyền lại Eifel.",
+              "terms": [
+                "CoCoA-E",
+                "Eifel retransmission timer"
+              ]
+            },
+            {
+              "en": "Simulations showed an improvement of the RTO estimation under two different RTT functions: stair-step and saw-like.",
+              "vi": "Mô phỏng cho thấy sự cải thiện của việc ước lượng RTO dưới hai hàm biến thiên RTT khác nhau: dạng bậc thang (stair-step) và dạng răng cưa (saw-like).",
+              "terms": [
+                "RTO estimation",
+                "stair-step",
+                "saw-like"
+              ]
+            },
+            {
+              "en": "Both '4-states-strong' and CoCoA-E will be presented in details in Section VII.A, as they are adopted as term of comparison in the performance evaluation.",
+              "vi": "Cả hai giải thuật '4-states-strong' và CoCoA-E sẽ được trình bày chi tiết trong Mục VII.A, vì chúng được chọn làm đối tượng so sánh đối chứng trong phần đánh giá hiệu năng.",
+              "terms": [
+                "4-states-strong",
+                "CoCoA-E",
+                "comparison"
+              ]
+            },
+            {
+              "en": "Finally, in [16] the authors evaluate CoCoA-S, a version of CoCoA that uses only the strong RTO estimator.",
+              "vi": "Cuối cùng, trong [16], các tác giả đánh giá CoCoA-S – một phiên bản của CoCoA chỉ dùng duy nhất bộ ước lượng RTO mạnh.",
+              "terms": [
+                "CoCoA-S",
+                "strong RTO estimator"
+              ]
+            },
+            {
+              "en": "The variant is evaluated against other TCP congestion control algorithms such as the Linux RTO and the peak-hopper TCP RTO estimator.",
+              "vi": "Biến thể này được đánh giá đối chứng với các thuật toán điều khiển tắc nghẽn TCP khác như Linux RTO và bộ ước lượng peak-hopper TCP RTO.",
+              "terms": [
+                "Linux RTO",
+                "peak-hopper"
+              ]
+            },
+            {
+              "en": "To conclude, Table I summarizes the congestion control strategies recently proposed in literature, along with their main features.",
+              "vi": "Để kết luận, Bảng I (Table I) tổng kết các chiến lược điều khiển tắc nghẽn mới nhất được đề xuất trong tài liệu khoa học, cùng với các đặc tính kỹ thuật cốt lõi của chúng.",
+              "terms": [
+                "Table I",
+                "congestion control strategies"
+              ]
+            }
+          ]
+        }
       ]
     },
     {
@@ -436,37 +590,82 @@ const PAPER_1_DATA = {
       "title": "IV. PERFORMANCE EVALUATION",
       "title_vi": "IV. ĐÁNH GIÁ HIỆU NĂNG MÔ PHỎNG",
       "badge": "Section IV",
+      "figures_top": [
+        {
+          "id": "fig1",
+          "title": "Fig. 1. Network topology",
+          "src": "assets/p1_fig1_crop.png",
+          "caption": "Fig. 1. Network topology: 6x6 grid of motes with node ID 1 as RPL border router and node ID 3 as CoAP server."
+        }
+      ],
       "paragraphs": [
         {
-          "id": "p1_eval_desc",
+          "id": "p1_eval_p1",
           "sentences": [
             {
-              "en": "The performance evaluation is carried out by simulation using the Cooja platform, leveraging a ContikiOS implementation of CoCoA+ on a 6x6 grid of motes.",
-              "vi": "Đánh giá hiệu năng được tiến hành bằng mô phỏng trên nền tảng Cooja, sử dụng bản cài đặt ContikiOS của CoCoA+ trên mô hình lưới 6x6 nút cảm biến.",
+              "en": "In this section, we analyze the results of the performance evaluation.",
+              "vi": "Trong phần này, chúng tôi tiến hành phân tích các kết quả đánh giá hiệu năng.",
               "terms": [
-                "Cooja",
-                "ContikiOS",
-                "6x6 grid"
+                "performance evaluation"
               ]
             },
             {
-              "en": "In all scenarios, periodic CoAP traffic is considered with varying request periods T from 70s down to 0.5s to inject increasing data loads.",
-              "vi": "Trong mọi kịch bản, lưu lượng CoAP định kỳ được xem xét với chu kỳ yêu cầu T biến đổi từ 70s xuống 0.5s để bơm tải dữ liệu tăng dần vào mạng.",
+              "en": "The performance evaluation is carried out by simulation using the Cooja platform, leveraging a ContikiOS implementation of CoCoA+ originally obtained from its authors, and then updated to be in line with the latest CoCoA+ specification [3].",
+              "vi": "Đánh giá hiệu năng được thực hiện bằng mô phỏng trên nền tảng Cooja, sử dụng bản cài đặt ContikiOS của CoCoA+ nhận được từ chính các tác giả, sau đó cập nhật theo đúng đặc tả CoCoA+ mới nhất [3].",
               "terms": [
-                "periodic",
-                "request periods"
+                "Cooja",
+                "ContikiOS",
+                "CoCoA+ specification"
+              ]
+            },
+            {
+              "en": "Cooja motes are used to emulate wireless sensor devices. The relevant simulation parameters are summarized in Table II.",
+              "vi": "Các nút Cooja motes được dùng để giả lập thiết bị cảm biến không dây. Các thông số mô phỏng quan trọng được tóm tắt trong Bảng II (Table II).",
+              "terms": [
+                "Cooja motes",
+                "simulation parameters",
+                "Table II"
+              ]
+            },
+            {
+              "en": "In all scenarios, we consider a grid of 6x6 nodes, as reported in Fig. 1.",
+              "vi": "Trong tất cả các kịch bản, chúng tôi khảo sát mô hình mạng dạng lưới 6x6 nút như được biểu diễn trong Hình 1 (Fig. 1).",
+              "terms": [
+                "6x6 nodes",
+                "Fig. 1"
+              ]
+            },
+            {
+              "en": "In the network, one node is the RPL border router (node ID 1), one node act as a CoAP server (node ID 3), and, finally, the remaining nodes are CoAP clients.",
+              "vi": "Trong mạng, một nút đóng vai trò là router biên RPL (nút ID 1), một nút đóng vai trò máy chủ CoAP server (nút ID 3), và các nút còn lại là các máy khách CoAP clients.",
+              "terms": [
+                "RPL border router",
+                "CoAP server",
+                "CoAP clients"
+              ]
+            },
+            {
+              "en": "The linear distance between two nodes in a row is 10m.",
+              "vi": "Khoảng cách tuyến tính giữa hai nút liền kề trong một hàng là 10 mét.",
+              "terms": [
+                "linear distance",
+                "10m"
               ]
             }
           ]
         }
       ],
-      "figures": [
+      "tables": [
         {
-          "id": "fig1",
-          "title": "Fig. 1, Network topology",
-          "src": "assets/p1_img_p3_1.png",
-          "caption": "Fig. 1. Network topology: 6x6 grid of nodes with node ID 1 as RPL border router and node ID 3 as CoAP server."
-        },
+          "id": "p1_table2",
+          "title": "TABLE II: SIMULATION PARAMETERS",
+          "subtitle": "BẢNG THÔNG SỐ CẤU HÌNH MÔ PHỎNG",
+          "img_src": "assets/p1_table2.png",
+          "caption": "Table II. Simulation parameters for the Cooja platform on a 6x6 grid of motes.",
+          "html": "<table class=\"academic-html-table\" style=\"width:100%; border-collapse:collapse; font-size:0.78rem; text-align:left; margin-top:0.5rem;\">\n<thead>\n  <tr style=\"border-top:2px solid var(--text-primary); border-bottom:1.5px solid var(--text-primary);\">\n    <th style=\"padding:5px 8px; width:45%;\">Parameter</th>\n    <th style=\"padding:5px 8px;\">Value</th>\n  </tr>\n</thead>\n<tbody>\n  <tr style=\"border-bottom:1px solid var(--border-color);\"><td style=\"padding:4px 8px; font-weight:700;\">L2 protocol</td><td style=\"padding:4px 8px;\">IEEE 802.15.4, 250 Kbps PHY rate</td></tr>\n  <tr style=\"border-bottom:1px solid var(--border-color);\"><td style=\"padding:4px 8px; font-weight:700;\">Channel model</td><td style=\"padding:4px 8px;\">Unit Disk GM, tx range = 10m, interference = 20m</td></tr>\n  <tr style=\"border-bottom:1px solid var(--border-color);\"><td style=\"padding:4px 8px; font-weight:700;\">MAC buffer size</td><td style=\"padding:4px 8px;\">8 packets</td></tr>\n  <tr style=\"border-bottom:1px solid var(--border-color);\"><td style=\"padding:4px 8px; font-weight:700;\">MAC level max retransmissions</td><td style=\"padding:4px 8px;\">8</td></tr>\n  <tr style=\"border-bottom:1px solid var(--border-color);\"><td style=\"padding:4px 8px; font-weight:700;\">L3 protocol & Routing</td><td style=\"padding:4px 8px;\">6LoWPAN & RPL</td></tr>\n  <tr style=\"border-bottom:1px solid var(--border-color);\"><td style=\"padding:4px 8px; font-weight:700;\">CoAP base ACK-TIMEOUT</td><td style=\"padding:4px 8px;\">3s</td></tr>\n  <tr style=\"border-bottom:1px solid var(--border-color);\"><td style=\"padding:4px 8px; font-weight:700;\">CoAP requests buffer size</td><td style=\"padding:4px 8px;\">4</td></tr>\n  <tr style=\"border-bottom:1px solid var(--border-color);\"><td style=\"padding:4px 8px; font-weight:700;\">Periodic traffic (T)</td><td style=\"padding:4px 8px;\">0.5s (6048 B/s) down to 70s (45 B/s)</td></tr>\n  <tr style=\"border-bottom:2px solid var(--text-primary);\"><td style=\"padding:4px 8px; font-weight:700;\">Bursty traffic inter-arrival</td><td style=\"padding:4px 8px;\">10s, 30s, 40s, 60s, 90s, 100s, 120s, 140s</td></tr>\n</tbody>\n</table>"
+        }
+      ],
+      "figures": [
         {
           "id": "fig2",
           "title": "Fig. 2, Carried load vs. offered load",

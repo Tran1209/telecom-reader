@@ -182,6 +182,46 @@ function renderAcademicAlgorithm(algo) {
   `;
 }
 
+// Helper: Render Academic Tables
+function renderAcademicTable(tbl) {
+  if (!tbl) return '';
+  return `
+    <div class="academic-table" id="${tbl.id || ''}" style="margin: 1.5rem 0; break-inside: avoid; background: var(--bg-surface); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 0.85rem; box-shadow: var(--shadow-sm); text-align: center;">
+      <div style="font-size: 0.85rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.05em; color: var(--primary); margin-bottom: 0.25rem;">
+        ${escapeHtml(tbl.title)}
+      </div>
+      ${tbl.subtitle ? `<div style="font-size: 0.775rem; font-weight: 700; color: var(--text-muted); margin-bottom: 0.6rem; text-transform: uppercase;">${escapeHtml(tbl.subtitle)}</div>` : ''}
+      ${tbl.img_src ? `
+        <div style="margin-bottom: 0.65rem;">
+          <img src="${tbl.img_src}" alt="${escapeHtml(tbl.title)}" style="max-width: 100%; height: auto; border-radius: 4px; border: 1px solid var(--border-color);" loading="lazy">
+        </div>
+      ` : ''}
+      ${tbl.html ? `
+        <div style="overflow-x: auto; margin-top: 0.5rem;">
+          ${tbl.html}
+        </div>
+      ` : ''}
+      ${tbl.caption ? `
+        <div style="font-size: 0.78rem; color: var(--text-secondary); margin-top: 0.5rem; text-align: justify; line-height: 1.45;">
+          ${escapeHtml(tbl.caption)}
+        </div>
+      ` : ''}
+    </div>
+  `;
+}
+
+// Toggle Wide View (Full-width 2-column focus mode)
+let isWideView = false;
+function toggleWideView() {
+  isWideView = !isWideView;
+  mainContainer.classList.toggle('wide-reading-mode', isWideView);
+  const btn = document.getElementById('btnWideView');
+  if (btn) {
+    btn.classList.toggle('active', isWideView);
+    btn.innerHTML = isWideView ? '📖 Hiện lại thanh bên' : '🖥️ Mở rộng 2 cột (Toàn màn hình)';
+  }
+}
+
 // Helper: Render 1:1 Original PDF Page Viewer
 function renderPdfPageViewer(paper) {
   let html = `
@@ -209,11 +249,15 @@ function renderPdfPageViewer(paper) {
 
       <div style="margin-top: 1.25rem; padding-top: 0.85rem; border-top: 1px solid var(--border-color); display: flex; flex-wrap: wrap; gap: 0.45rem; align-items: center;">
         <span style="font-size: 0.8rem; font-weight: 700; color: var(--text-secondary); margin-right: 0.25rem;">Nhảy nhanh đến trang:</span>
-        ${paper.page_images.map((_, idx) => `
-          <button class="pill-btn" style="padding: 0.25rem 0.6rem; font-size: 0.775rem;" onclick="smoothScrollTo('pdf_page_${idx+1}', event)">
-            Trang ${idx+1}
-          </button>
-        `).join('')}
+        ${paper.page_images.map((_, idx) => {
+          const pageNum = idx + 1;
+          const isSpecial = (paper.id === 'paper1' && pageNum === 3) ? ' ⭐ (Table I & Fig 1)' : '';
+          return `
+            <button class="pill-btn ${pageNum === 3 ? 'active' : ''}" style="padding: 0.25rem 0.6rem; font-size: 0.775rem;" onclick="smoothScrollTo('pdf_page_${pageNum}', event)">
+              Trang ${pageNum}${isSpecial}
+            </button>
+          `;
+        }).join('')}
       </div>
     </div>
 
@@ -326,6 +370,13 @@ function renderPaperContent(paper) {
         </div>
     `;
 
+    // Figures placed at the TOP of the section (like Fig. 1 at the top of Section IV!)
+    if (sec.figures_top && sec.figures_top.length > 0) {
+      sec.figures_top.forEach(fig => {
+        html += renderAcademicFigure(fig);
+      });
+    }
+
     // Paragraphs
     if (sec.paragraphs) {
       sec.paragraphs.forEach(para => {
@@ -366,6 +417,13 @@ function renderPaperContent(paper) {
       });
     }
 
+    // Tables (like Table I in Section II, Table II in Section IV)
+    if (sec.tables && sec.tables.length > 0) {
+      sec.tables.forEach(tbl => {
+        html += renderAcademicTable(tbl);
+      });
+    }
+
     // Algorithms
     if (sec.algorithms && sec.algorithms.length > 0) {
       sec.algorithms.forEach(algo => {
@@ -373,7 +431,7 @@ function renderPaperContent(paper) {
       });
     }
 
-    // Figures
+    // Figures placed after paragraphs
     if (sec.figures && sec.figures.length > 0) {
       sec.figures.forEach(fig => {
         html += renderAcademicFigure(fig);
@@ -421,6 +479,13 @@ function renderDualColumn(paper) {
         </div>
     `;
 
+    if (sec.figures_top && sec.figures_top.length > 0) {
+      sec.figures_top.forEach(fig => {
+        leftHtml += renderAcademicFigure(fig);
+        rightHtml += renderAcademicFigure(fig);
+      });
+    }
+
     if (sec.paragraphs) {
       sec.paragraphs.forEach(para => {
         leftHtml += `<p class="paper-paragraph">`;
@@ -458,6 +523,13 @@ function renderDualColumn(paper) {
       sec.equations.forEach(eq => {
         leftHtml += renderAcademicEquation(eq);
         rightHtml += renderAcademicEquation(eq);
+      });
+    }
+
+    if (sec.tables && sec.tables.length > 0) {
+      sec.tables.forEach(tbl => {
+        leftHtml += renderAcademicTable(tbl);
+        rightHtml += renderAcademicTable(tbl);
       });
     }
 

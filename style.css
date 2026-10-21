@@ -1230,11 +1230,55 @@ body {
   text-align: justify;
 }
 
-@media (max-width: 900px) {
+@media (max-width: 640px) {
   .journal-two-columns {
     column-count: 1;
     column-rule: none;
   }
+}
+
+/* Academic Tables */
+.academic-table {
+  break-inside: avoid;
+  margin: 1.5rem 0;
+  text-align: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.academic-html-table th {
+  color: var(--text-primary);
+  font-weight: 700;
+  background: var(--bg-hover);
+}
+
+.academic-html-table td {
+  color: var(--text-secondary);
+  line-height: 1.4;
+}
+
+/* Wide reading mode (Full-width 2-column focus view) */
+.main-layout.wide-reading-mode {
+  grid-template-columns: 1fr !important;
+  max-width: 1300px !important;
+  margin: 0 auto !important;
+}
+
+.main-layout.wide-reading-mode .left-sidebar,
+.main-layout.wide-reading-mode .right-sidebar {
+  display: none !important;
+}
+
+.main-layout.wide-reading-mode .paper-content {
+  padding: 2.25rem 2.75rem;
+}
+
+.main-layout.wide-reading-mode .journal-two-columns {
+  column-count: 2 !important;
+  column-gap: 3.5rem !important;
 }
 
 /* Academic Figures */
