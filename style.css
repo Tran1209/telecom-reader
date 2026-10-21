@@ -961,6 +961,185 @@ body {
   margin-bottom: 0.5rem;
 }
 
+/* ==========================================================================
+   INTERACTION: BẤM LẦN 1 CHỌN CÂU - BẤM LẦN 2 CHỌN TỪ
+   ========================================================================== */
+
+/* Selected Sentence State (Bấm lần 1 để chọn câu) */
+.sentence-token.sentence-selected {
+  background-color: rgba(37, 99, 235, 0.14) !important;
+  box-shadow: inset 0 0 0 1.5px var(--primary), 0 2px 8px rgba(37, 99, 235, 0.15);
+  border-radius: var(--radius-sm);
+  color: var(--text-primary);
+}
+
+[data-theme="dark"] .sentence-token.sentence-selected {
+  background-color: rgba(96, 165, 250, 0.22) !important;
+  box-shadow: inset 0 0 0 1.5px var(--primary), 0 2px 10px rgba(96, 165, 250, 0.2);
+}
+
+[data-theme="sepia"] .sentence-token.sentence-selected {
+  background-color: rgba(180, 83, 9, 0.18) !important;
+  box-shadow: inset 0 0 0 1.5px var(--primary);
+}
+
+/* Selected Word State (Bấm lần 2 để chọn từ) */
+.word-token.word-selected {
+  background-color: #facc15 !important;
+  color: #000000 !important;
+  font-weight: 700 !important;
+  border-radius: 4px;
+  padding: 1px 3px;
+  box-shadow: 0 0 0 2px #ca8a04;
+}
+
+[data-theme="dark"] .word-token.word-selected {
+  background-color: #fbbf24 !important;
+  color: #0f172a !important;
+  box-shadow: 0 0 0 2px #f59e0b;
+}
+
+/* Floating Word Popover (Balloon dịch nghĩa từng từ ngay tại vị trí từ) */
+.word-popover {
+  position: fixed;
+  z-index: 1500;
+  width: 320px;
+  max-width: 90vw;
+  background: var(--bg-surface);
+  border: 1.5px solid var(--primary);
+  border-radius: var(--radius-md);
+  padding: 0.85rem 1rem;
+  box-shadow: var(--shadow-xl), 0 0 0 1px rgba(37, 99, 235, 0.15);
+  font-size: 0.85rem;
+  line-height: 1.5;
+  color: var(--text-primary);
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(8px);
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.word-popover.visible {
+  opacity: 1;
+  pointer-events: auto;
+  transform: translateY(0);
+}
+
+.word-popover-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  border-bottom: 1px solid var(--border-color);
+  padding-bottom: 0.5rem;
+  margin-bottom: 0.6rem;
+}
+
+.word-popover-title {
+  font-size: 1.15rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  letter-spacing: -0.01em;
+}
+
+.word-popover-ipa {
+  font-family: var(--font-mono);
+  font-size: 0.775rem;
+  color: var(--text-muted);
+  margin-left: 0.35rem;
+}
+
+.word-popover-pos {
+  display: inline-block;
+  font-size: 0.7rem;
+  font-weight: 700;
+  padding: 0.15rem 0.45rem;
+  border-radius: var(--radius-full);
+  background-color: var(--primary-light);
+  color: var(--primary);
+  margin-left: 0.4rem;
+}
+
+.word-popover-vi {
+  font-size: 0.95rem;
+  color: var(--text-primary);
+  margin-bottom: 0.45rem;
+  line-height: 1.4;
+}
+
+.word-popover-vi strong {
+  color: var(--primary);
+}
+
+.word-popover-telecom {
+  font-size: 0.8rem;
+  background: linear-gradient(135deg, rgba(30, 64, 175, 0.08), rgba(59, 130, 246, 0.04));
+  border: 1px solid rgba(59, 130, 246, 0.25);
+  border-radius: var(--radius-sm);
+  padding: 0.5rem 0.65rem;
+  margin-bottom: 0.6rem;
+  line-height: 1.45;
+  color: var(--text-secondary);
+}
+
+.word-popover-telecom strong {
+  color: var(--primary);
+}
+
+.word-popover-actions {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.4rem;
+}
+
+.pop-btn {
+  background: var(--bg-hover);
+  border: 1px solid var(--border-color);
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--primary);
+  cursor: pointer;
+  font-size: 0.85rem;
+  transition: all 0.15s;
+}
+
+.pop-btn:hover {
+  background: var(--primary);
+  color: white;
+}
+
+.pop-action-btn {
+  flex: 1;
+  padding: 0.35rem 0.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  border-radius: var(--radius-sm);
+  border: 1px solid var(--border-color);
+  background: var(--bg-hover);
+  color: var(--text-secondary);
+  cursor: pointer;
+  transition: all 0.15s;
+}
+
+.pop-action-btn:hover {
+  background: var(--primary);
+  color: white;
+  border-color: var(--primary);
+}
+
+/* Sentence Popover Hint */
+.popover-hint {
+  font-size: 0.75rem;
+  color: var(--accent-teal);
+  margin-top: 0.45rem;
+  padding-top: 0.35rem;
+  border-top: 1px dashed var(--border-color);
+  font-weight: 600;
+}
+
 /* Responsive adjustments */
 @media (max-width: 1200px) {
   .main-layout {

@@ -11,6 +11,7 @@ let currentTheme = localStorage.getItem('telecom_theme') || 'light';
 let fontScale = 1; // 1 = 100%
 let activeSentenceData = null;
 let activeWordData = null;
+let selectedSentenceId = null;
 let savedWords = JSON.parse(localStorage.getItem('telecom_saved_words') || '[]');
 
 // DOM Elements
@@ -20,6 +21,7 @@ const tocContainer = document.getElementById('tocContainer');
 const sentencePopover = document.getElementById('sentencePopover');
 const popoverEnText = document.getElementById('popoverEnText');
 const popoverViText = document.getElementById('popoverViText');
+const wordPopover = document.getElementById('wordPopover');
 const sentenceDock = document.getElementById('sentenceDock');
 const dockViText = document.getElementById('dockViText');
 const dockEnText = document.getElementById('dockEnText');
@@ -324,46 +326,75 @@ function findSentenceDataById(sentenceId) {
 // Handle Sentence Hover ("chạm vào mới hiện văn nghĩa")
 function handleSentenceHover(sentenceId, event) {
   if (currentMode === 'inline') return;
+  // If a sentence is already locked/selected by click, don't override popover unless hovering out
+  if (selectedSentenceId) return;
 
   const sData = findSentenceDataById(sentenceId);
   if (!sData) return;
 
   activeSentenceData = sData;
 
-  // Highlight active sentence element
-  const el = document.getElementById(sentenceId);
+  const el = document.getElementById(sentenceId) || document.getElementById(`dual_en_${sentenceId}`);
   if (el) el.classList.add('active-hover');
 
-  // Update Popover content
   popoverEnText.innerText = `"${sData.en}"`;
   popoverViText.innerText = sData.vi;
 
-  // Position Popover near cursor
   positionPopover(event);
   sentencePopover.classList.add('visible');
 
-  // Also update Right Sidebar & Bottom Dock
   updateSentenceInspector(sData.en, sData.vi);
   updateSentenceDock(sData.en, sData.vi);
 }
 
 function handleSentenceLeave(sentenceId) {
-  const el = document.getElementById(sentenceId);
+  const el = document.getElementById(sentenceId) || document.getElementById(`dual_en_${sentenceId}`);
   if (el) el.classList.remove('active-hover');
-  sentencePopover.classList.remove('visible');
+  if (!selectedSentenceId) {
+    sentencePopover.classList.remove('visible');
+  }
+}
+
+// BẤM LẦN 1: CHỌN CÂU
+function selectSentence(sentenceId, event) {
+  // Clear previous selected sentence
+  if (selectedSentenceId) {
+    const prev = document.getElementById(selectedSentenceId) || document.getElementById(`dual_en_${selectedSentenceId}`);
+    if (prev) prev.classList.remove('sentence-selected');
+  }
+  closeWordPopover();
+
+  selectedSentenceId = sentenceId;
+
+  const el = document.getElementById(sentenceId) || document.getElementById(`dual_en_${sentenceId}`);
+  if (el) el.classList.add('sentence-selected');
+
+  const sData = findSentenceDataById(sentenceId);
+  if (!sData) return;
+
+  activeSentenceData = sData;
+
+  // Show sentence translation popover
+  popoverEnText.innerText = `"${sData.en}"`;
+  popoverViText.innerText = sData.vi;
+
+  if (event) {
+    positionPopover(event);
+  } else if (el) {
+    positionPopoverNearElement(el);
+  }
+  sentencePopover.classList.add('visible');
+
+  updateSentenceInspector(sData.en, sData.vi);
+  updateSentenceDock(sData.en, sData.vi);
+  sentenceDock.classList.add('dock-open');
 }
 
 function handleSentenceClick(sentenceId, event) {
-  // If target was a word, word handler handled it
-  if (event && event.target && event.target.classList.contains('word-token')) {
-    return;
+  if (event) {
+    event.stopPropagation();
   }
-  const sData = findSentenceDataById(sentenceId);
-  if (sData) {
-    updateSentenceInspector(sData.en, sData.vi);
-    updateSentenceDock(sData.en, sData.vi);
-    sentenceDock.classList.add('dock-open');
-  }
+  selectSentence(sentenceId, event);
 }
 
 // Position Floating Sentence Popover
@@ -378,8 +409,8 @@ function positionPopover(event) {
   }
   if (x < margin) x = margin;
 
-  if (y + 180 > window.innerHeight) {
-    y = event.clientY - 160;
+  if (y + 190 > window.innerHeight) {
+    y = event.clientY - 170;
   }
 
   sentencePopover.style.left = `${x}px`;
@@ -387,69 +418,190 @@ function positionPopover(event) {
   sentencePopover.style.maxWidth = `${popoverWidth}px`;
 }
 
-// Handle Word Click ("ấn 1 từ thì nó hiện nghĩa của 1 từ")
-function handleWordClick(word, sentenceId, event) {
-  if (event) {
-    event.stopPropagation(); // Don't trigger sentence click
+function positionPopoverNearElement(el) {
+  const rect = el.getBoundingClientRect();
+  const margin = 15;
+  const popoverWidth = Math.min(480, window.innerWidth - 30);
+  let x = rect.left;
+  let y = rect.bottom + 10;
+
+  if (x + popoverWidth > window.innerWidth) {
+    x = window.innerWidth - popoverWidth - margin;
+  }
+  if (x < margin) x = margin;
+
+  if (y + 190 > window.innerHeight) {
+    y = Math.max(10, rect.top - 170);
   }
 
-  // Remove previous word active class
+  sentencePopover.style.left = `${x}px`;
+  sentencePopover.style.top = `${y}px`;
+  sentencePopover.style.maxWidth = `${popoverWidth}px`;
+}
+
+// ==========================================================================
+// BẤM LẦN 1: CHỌN CÂU | BẤM LẦN 2: CHỌN TỪ
+// ==========================================================================
+function handleWordClick(word, sentenceId, event) {
+  if (event) {
+    event.stopPropagation(); // Don't trigger document click
+  }
+
+  const targetEl = event ? event.currentTarget : null;
+
+  // Quy tắc người dùng yêu cầu:
+  // Nếu câu này chưa được chọn -> BẤM LẦN 1: CHỌN CÂU!
+  if (selectedSentenceId !== sentenceId) {
+    selectSentence(sentenceId, event);
+  } else {
+    // Nếu câu này ĐÃ được chọn rồi -> BẤM LẦN 2: CHỌN TỪ & DỊCH TỪ ĐÓ!
+    selectWord(word, sentenceId, targetEl, event);
+  }
+}
+
+// BẤM LẦN 2: CHỌN VÀ DỊCH TỪ CỤ THỂ
+function selectWord(word, sentenceId, targetEl, event) {
+  // Clear previous word highlight
   document.querySelectorAll('.word-token.word-selected').forEach(el => el.classList.remove('word-selected'));
-  if (event && event.target) {
-    event.target.classList.add('word-selected');
+  if (targetEl) {
+    targetEl.classList.add('word-selected');
   }
 
   const lookupResult = lookupDictionary(word);
   activeWordData = lookupResult;
 
-  // Get sentence context if available
+  // Attach sentence context
   const sData = findSentenceDataById(sentenceId);
   if (sData) {
     lookupResult.contextEn = sData.en;
     lookupResult.contextVi = sData.vi;
   }
 
+  // Update right sidebar inspector
   renderWordInspector(lookupResult);
 
-  // Play audio automatically or indicate in inspector
-  const inspectorCard = document.getElementById('wordInspectorCard');
-  inspectorCard.classList.add('active-state');
-  setTimeout(() => inspectorCard.classList.remove('active-state'), 600);
+  // Position and show floating word popover right at the clicked word
+  showWordPopover(lookupResult, targetEl, event);
+
+  // Close sentence popover so it doesn't clutter
+  sentencePopover.classList.remove('visible');
+}
+
+// Show Floating Word Balloon / Popover right at the word
+function showWordPopover(data, targetEl, event) {
+  if (!wordPopover) return;
+
+  document.getElementById('wordPopName').innerText = data.word;
+  document.getElementById('wordPopIpa').innerText = data.ipa || '';
+  document.getElementById('wordPopPos').innerText = data.pos || 'Từ vựng';
+  document.getElementById('wordPopViText').innerText = data.vi || data.general_def || 'Đang tra nghĩa...';
+
+  const telecomBox = document.getElementById('wordPopTelecom');
+  const telecomText = document.getElementById('wordPopTelecomText');
+  if (data.telecom_def && data.telecom_def !== data.general_def) {
+    telecomText.innerText = data.telecom_def;
+    telecomBox.style.display = 'block';
+  } else {
+    telecomBox.style.display = 'none';
+  }
+
+  // Position word popover near clicked word
+  let rect;
+  if (targetEl) {
+    rect = targetEl.getBoundingClientRect();
+  } else if (event) {
+    rect = { left: event.clientX, right: event.clientX, top: event.clientY, bottom: event.clientY, width: 0, height: 0 };
+  }
+
+  if (rect) {
+    const popWidth = Math.min(320, window.innerWidth - 24);
+    let x = rect.left + (rect.width / 2) - (popWidth / 2);
+    
+    // Clamp horizontal
+    if (x < 12) x = 12;
+    if (x + popWidth > window.innerWidth - 12) {
+      x = window.innerWidth - popWidth - 12;
+    }
+
+    // Vertical placement (prefer above if enough space, otherwise below)
+    let y;
+    if (rect.top > 230) {
+      y = rect.top - 200; // Above
+    } else {
+      y = rect.bottom + 8; // Below
+    }
+
+    wordPopover.style.left = `${x}px`;
+    wordPopover.style.top = `${y}px`;
+    wordPopover.style.maxWidth = `${popWidth}px`;
+  }
+
+  wordPopover.classList.add('visible');
+
+  // If word definition was generic or missing, fetch live translation
+  if (data.isFallback || !data.vi) {
+    fetchLiveTranslation(data.cleanWord || data.word);
+  }
+}
+
+function closeWordPopover() {
+  if (wordPopover) {
+    wordPopover.classList.remove('visible');
+  }
+  document.querySelectorAll('.word-token.word-selected').forEach(el => el.classList.remove('word-selected'));
+}
+
+// Live Online Translation Fallback (guarantees 100% words have Vietnamese translations)
+function fetchLiveTranslation(word) {
+  const clean = word.toLowerCase().trim().replace(/[^a-z0-9]/g, '');
+  if (!clean || clean.length < 2) return;
+
+  fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(clean)}&langpair=en|vi`)
+    .then(res => res.json())
+    .then(resData => {
+      if (resData && resData.responseData && resData.responseData.translatedText) {
+        const trans = resData.responseData.translatedText;
+        // Check if translation is not identical to English
+        if (trans.toLowerCase() !== clean) {
+          const viEl = document.getElementById('wordPopViText');
+          if (viEl) viEl.innerText = trans;
+          
+          const inspectVi = document.getElementById('inspectGeneralDef');
+          if (inspectVi) inspectVi.innerText = trans;
+        }
+      }
+    })
+    .catch(() => {
+      // Offline fallback already present
+    });
 }
 
 // Lemmatization and Dictionary Lookup
 function lookupDictionary(rawWord) {
   const clean = rawWord.toLowerCase().trim().replace(/[^a-z0-9_\-\+]/g, '');
   
-  // 1. Direct match
+  // 1. Direct match in dictionary
   if (TELECOM_DICTIONARY[clean]) {
-    return TELECOM_DICTIONARY[clean];
+    return {
+      ...TELECOM_DICTIONARY[clean],
+      cleanWord: clean
+    };
   }
 
-  // 2. Lemmatization candidates
+  // 2. Lemmatization candidates (plurals, verb tenses, gerunds, adverbs)
   const candidates = [];
-  
-  // Plural -s, -es, -ies
   if (clean.endsWith('ies')) candidates.push(clean.slice(0, -3) + 'y');
   if (clean.endsWith('es')) candidates.push(clean.slice(0, -2));
   if (clean.endsWith('s')) candidates.push(clean.slice(0, -1));
-  
-  // Verb past -ed, -d
   if (clean.endsWith('ed')) {
     candidates.push(clean.slice(0, -2));
-    candidates.push(clean.slice(0, -1)); // e.g. evaluated -> evaluate
+    candidates.push(clean.slice(0, -1));
   }
-
-  // Gerund -ing
   if (clean.endsWith('ing')) {
     candidates.push(clean.slice(0, -3));
-    candidates.push(clean.slice(0, -3) + 'e'); // e.g. pacing -> pace
+    candidates.push(clean.slice(0, -3) + 'e');
   }
-
-  // Adverb -ly
   if (clean.endsWith('ly')) candidates.push(clean.slice(0, -2));
-
-  // Noun -tion, -tions, -ment
   if (clean.endsWith('tions')) candidates.push(clean.slice(0, -1));
 
   for (const cand of candidates) {
@@ -457,19 +609,23 @@ function lookupDictionary(rawWord) {
       const match = TELECOM_DICTIONARY[cand];
       return {
         ...match,
-        word: `${rawWord} (gốc từ: ${match.word})`
+        cleanWord: cand,
+        word: `${rawWord} (từ gốc: ${match.word})`
       };
     }
   }
 
-  // Fallback dynamic entry for any arbitrary English word
+  // 3. Fallback entry with live API trigger
   return {
     word: rawWord,
+    cleanWord: clean,
     ipa: `/${clean}/`,
-    pos: "Từ vựng tiếng Anh học thuật",
-    telecom_def: `Thuật ngữ trong ngữ cảnh bài báo Kỹ Thuật Truyền Thông: Được sử dụng để mô tả tiến trình truyền nhận và xử lý tín hiệu/gói tin.`,
-    general_def: `Nghĩa tổng quát: Từ vựng chuyên môn dùng trong tài liệu khoa học và kỹ thuật.`,
-    example: `Appears in context: "...${rawWord}..."`
+    pos: "Từ vựng tiếng Anh",
+    vi: "Đang tải bản dịch tiếng Việt...",
+    telecom_def: `Trong ngữ cảnh Kỹ Thuật Truyền Thông: Được sử dụng để mô tả tiến trình truyền nhận và xử lý tín hiệu/gói tin.`,
+    general_def: `Từ vựng học thuật trong tài liệu viễn thông.`,
+    example: `Xuất hiện trong bài báo: "...${rawWord}..."`,
+    isFallback: true
   };
 }
 
@@ -923,15 +1079,37 @@ function applyTheme(theme) {
 function setupGlobalEvents() {
   // Close Popover when scrolling
   window.addEventListener('scroll', () => {
-    sentencePopover.classList.remove('visible');
+    if (!selectedSentenceId) {
+      sentencePopover.classList.remove('visible');
+    }
   }, { passive: true });
+
+  // Click outside to deselect sentence and close popovers
+  document.addEventListener('click', (e) => {
+    if (e.target.closest('.sentence-token') || e.target.closest('.word-popover') || e.target.closest('.sentence-popover')) {
+      return;
+    }
+    if (selectedSentenceId) {
+      const prev = document.getElementById(selectedSentenceId) || document.getElementById(`dual_en_${selectedSentenceId}`);
+      if (prev) prev.classList.remove('sentence-selected');
+      selectedSentenceId = null;
+    }
+    closeWordPopover();
+    sentencePopover.classList.remove('visible');
+  });
 
   // Escape key closes modals and docks
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
       closeSavedWordsModal();
       closeDock();
+      closeWordPopover();
       sentencePopover.classList.remove('visible');
+      if (selectedSentenceId) {
+        const prev = document.getElementById(selectedSentenceId) || document.getElementById(`dual_en_${selectedSentenceId}`);
+        if (prev) prev.classList.remove('sentence-selected');
+        selectedSentenceId = null;
+      }
     }
   });
 

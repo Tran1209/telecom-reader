@@ -76,7 +76,7 @@
       </div>
 
       <div class="reading-hint">
-        <span>💡 <strong>Hướng dẫn:</strong> Rê chuột/chạm vào câu để xem dịch nghĩa Kỹ thuật Truyền thông; Bấm vào 1 từ tiếng Anh bất kỳ để tra nghĩa chuyên ngành + nghe phát âm!</span>
+        <span>💡 <strong>Hướng dẫn:</strong> Bấm lần 1 để chọn câu (xem dịch nghĩa Kỹ thuật Truyền thông); Bấm lần thứ 2 vào một từ bất kỳ trong câu để tra nghĩa chuyên ngành + nghe phát âm của từ đó!</span>
       </div>
     </div>
   </div>
@@ -194,13 +194,41 @@
 
   </main>
 
-  <!-- Floating Sentence Popover (Follows hover) -->
+  <!-- Floating Sentence Popover (Follows hover/click 1) -->
   <div class="sentence-popover" id="sentencePopover">
     <div class="popover-label">
-      <span>📡 Bản dịch Kỹ thuật Truyền thông:</span>
+      <span>📡 Bản dịch câu (Kỹ thuật Truyền thông):</span>
     </div>
     <div class="popover-en" id="popoverEnText"></div>
     <div class="popover-vi" id="popoverViText"></div>
+    <div class="popover-hint">
+      👉 Bấm lần thứ 2 vào một từ bất kỳ trong câu này để dịch từ đó!
+    </div>
+  </div>
+
+  <!-- Floating Word Popover (Bấm lần thứ 2 vào từ) -->
+  <div class="word-popover" id="wordPopover">
+    <div class="word-popover-header">
+      <div>
+        <span class="word-popover-title" id="wordPopName">congestion</span>
+        <span class="word-popover-ipa" id="wordPopIpa">/kənˈdʒes.tʃən/</span>
+        <span class="word-popover-pos" id="wordPopPos">Danh từ</span>
+      </div>
+      <div style="display: flex; gap: 0.35rem; align-items: center;">
+        <button class="pop-btn" onclick="speakCurrentWord()" title="Nghe phát âm chuẩn">🔊</button>
+        <button class="pop-btn" onclick="closeWordPopover()" title="Đóng">✕</button>
+      </div>
+    </div>
+    <div class="word-popover-vi" id="wordPopVi">
+      🇻🇳 <strong>Nghĩa:</strong> <span id="wordPopViText">Sự tắc nghẽn mạng</span>
+    </div>
+    <div class="word-popover-telecom" id="wordPopTelecom">
+      ⚡ <strong>Kỹ Thuật Truyền Thông:</strong> <span id="wordPopTelecomText">Hiện tượng lưu lượng vượt quá dung lượng kênh hoặc bộ đệm.</span>
+    </div>
+    <div class="word-popover-actions">
+      <button class="pop-action-btn" onclick="saveCurrentWord()">⭐ Lưu từ</button>
+      <button class="pop-action-btn" onclick="copyCurrentWord()">📋 Copy</button>
+    </div>
   </div>
 
   <!-- Bottom Sentence Dock (Smooth slide-in) -->
