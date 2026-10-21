@@ -1,28 +1,46 @@
-// Paper 1 Dataset: pCoCoA - Simone Bolettieri et al. (Ad Hoc Networks 2018)
+// Complete Academic Dataset for Paper 1 (Ad Hoc Networks 2018)
 const PAPER_1_DATA = {
   "id": "paper1",
+  "journal_header": "AD HOC NETWORKS • ELSEVIER • VOLUME 80, 2018, PP. 116–129",
   "code": "pCoCoA",
   "title": "pCoCoA: A precise congestion control algorithm for CoAP",
   "title_vi": "pCoCoA: Thuật toán điều khiển tắc nghẽn chính xác cho giao thức CoAP",
   "authors": "Simone Bolettieri, Giacomo Tanganelli, Carlo Vallati, Enzo Mingozzi",
-  "affiliations": "Department of Information Engineering, University of Pisa, Italy & IIT-CNR, Pisa, Italy",
-  "venue": "Ad Hoc Networks (Elsevier), Volume 80, 2018, Pages 116–129",
+  "affiliations": "Department of Information Engineering, University of Pisa, Italy & Institute of Informatics and Telematics (IIT)-CNR, Pisa, Italy",
+  "venue": "Ad Hoc Networks (Elsevier), Volume 80, 2018, Pages 116–129, ISSN 1570-8705",
   "doi": "https://doi.org/10.1016/j.adhoc.2018.06.015",
-  "course": "Kỹ thuật Truyền thông (Telecommunications & Computer Networks)",
   "summary_vi": "Bài báo nghiên cứu chuyên sâu về giao thức điều khiển tắc nghẽn CoCoA+ trong mạng IoT (LLN), vạch rõ các điểm yếu chí tử (RTO tiệm cận RTT, đỉnh nhọn RTO giả tạo, bộ ước lượng yếu không phản ứng kịp) và đề xuất thuật toán mới pCoCoA sử dụng tùy chọn bộ đếm Transmission Counter (TC) cùng bộ ước lượng mdev_max theo Linux TCP giúp triệt tiêu truyền lại giả tạo (spurious retransmissions).",
+  "index_terms": "CoAP, CoCoA, CoCoA+, Congestion Control, IoT, Low Power and Lossy Networks (LLN), RTO estimation, Round-Trip Time",
+  "page_count": 13,
+  "page_images": [
+    "assets/p1_page_1.png",
+    "assets/p1_page_2.png",
+    "assets/p1_page_3.png",
+    "assets/p1_page_4.png",
+    "assets/p1_page_5.png",
+    "assets/p1_page_6.png",
+    "assets/p1_page_7.png",
+    "assets/p1_page_8.png",
+    "assets/p1_page_9.png",
+    "assets/p1_page_10.png",
+    "assets/p1_page_11.png",
+    "assets/p1_page_12.png",
+    "assets/p1_page_13.png"
+  ],
   "sections": [
     {
       "id": "p1_sec_abstract",
-      "title": "Abstract",
-      "title_vi": "Tóm tắt bài báo",
-      "badge": "Tổng quan",
+      "title": "Abstract & Index Terms",
+      "title_vi": "Tóm tắt & Từ khóa chỉ mục",
+      "badge": "Abstract",
+      "is_abstract": true,
       "paragraphs": [
         {
           "id": "p1_abs_1",
           "sentences": [
             {
               "en": "The Constrained Application Protocol (CoAP) is an IETF standard application protocol for the future Internet of Things (IoT).",
-              "vi": "Giao thức Ứng dụng Bị ràng buộc (CoAP - Constrained Application Protocol) là giao thức tầng ứng dụng tiêu chuẩn do IETF ban hành dành cho Mạng lưới Vạn vật kết nối Internet (IoT) trong tương lai.",
+              "vi": "Giao thức Ứng dụng Bị ràng buộc (CoAP - Constrained Application Protocol) là một giao thức tầng ứng dụng tiêu chuẩn của IETF dành cho mạng lưới Vạn vật kết nối Internet (IoT) trong tương lai.",
               "terms": [
                 "CoAP",
                 "IETF",
@@ -108,7 +126,7 @@ const PAPER_1_DATA = {
       "id": "p1_sec_intro",
       "title": "I. INTRODUCTION",
       "title_vi": "I. GIỚI THIỆU TỔNG QUAN",
-      "badge": "Cơ sở lý thuyết",
+      "badge": "Section I",
       "paragraphs": [
         {
           "id": "p1_intro_1",
@@ -291,22 +309,6 @@ const PAPER_1_DATA = {
               ]
             },
             {
-              "en": "An in-depth analysis of these simulation results allows us to highlight some novel critical issues of the algorithm.",
-              "vi": "Phân tích chuyên sâu từ các kết quả mô phỏng cho phép chúng tôi vạch ra những vấn đề nghiêm trọng mới phát sinh của thuật toán.",
-              "terms": [
-                "simulation results",
-                "critical issues"
-              ]
-            },
-            {
-              "en": "Consequently, we propose a set of modifications to the original algorithm to overcome these limitations.",
-              "vi": "Từ đó, chúng tôi đề xuất một tập các cải tiến cho thuật toán ban đầu để vượt qua những giới hạn này.",
-              "terms": [
-                "modifications",
-                "limitations"
-              ]
-            },
-            {
               "en": "The resulting algorithm, named pCoCoA, is evaluated against CoAP, CoCoA+ and two more recent algorithms: 4-state-strong [7] and CoCoA-E [14].",
               "vi": "Thuật toán kết quả mang tên pCoCoA được đánh giá so sánh với CoAP, CoCoA+ và hai thuật toán gần đây: 4-state-strong [7] và CoCoA-E [14].",
               "terms": [
@@ -323,14 +325,6 @@ const PAPER_1_DATA = {
                 "throughputs",
                 "delays"
               ]
-            },
-            {
-              "en": "Moreover, pCoCoA can correctly handle scenarios in which CoAP traffic competes with interfering bursty traffic, whereas other algorithms, such as CoCoA-E, do not.",
-              "vi": "Đặc biệt, pCoCoA xử lý rất chuẩn xác trong các tình huống lưu lượng CoAP cạnh tranh với lưu lượng bùng nổ gây nhiễu, điều mà các thuật toán khác như CoCoA-E không làm được.",
-              "terms": [
-                "bursty traffic",
-                "CoCoA-E"
-              ]
             }
           ]
         }
@@ -340,10 +334,10 @@ const PAPER_1_DATA = {
       "id": "p1_sec_cocoa_plus",
       "title": "II. COCOA+ CONGESTION CONTROL",
       "title_vi": "II. THUẬT TOÁN ĐIỀU KHIỂN TẮC NGHẼN COCOA+",
-      "badge": "Chi tiết giải thuật",
+      "badge": "Section II",
       "paragraphs": [
         {
-          "id": "p1_cocoa_intro",
+          "id": "p1_cocoa_p1",
           "sentences": [
             {
               "en": "The Simple Congestion Control/Advanced, also known as CoCoA, is an alternative congestion control algorithm for CoAP originally proposed in [2] and now currently under standardization within the activities of the CoRE Working Group [8].",
@@ -355,8 +349,8 @@ const PAPER_1_DATA = {
               ]
             },
             {
-              "en": "In this work we consider its last revision, CoCoA+ [3]. The algorithm is composed of the following three main functions: a policy to calculate the retransmission timeout (RTO), the back-off policy to set the RTO for retransmissions, and an ageing policy for the status information.",
-              "vi": "Trong công trình này chúng tôi xem xét phiên bản mới nhất là CoCoA+ [3]. Thuật toán được cấu thành từ ba cơ chế then chốt: chính sách tính toán RTO, chính sách thoái lui (back-off) cho các lần truyền lại, và chính sách lão hóa (ageing) cho thông tin trạng thái mạng.",
+              "en": "The algorithm is composed of the following three main functions: a policy to calculate the retransmission timeout (RTO), the back-off policy to set the RTO for retransmissions, and an ageing policy for the status information.",
+              "vi": "Thuật toán được cấu thành từ ba cơ chế then chốt: chính sách tính toán RTO, chính sách thoái lui (back-off) cho các lần truyền lại, và chính sách lão hóa (ageing) cho thông tin trạng thái mạng.",
               "terms": [
                 "CoCoA+",
                 "RTO",
@@ -367,17 +361,9 @@ const PAPER_1_DATA = {
           ]
         },
         {
-          "id": "p1_cocoa_rto",
+          "id": "p1_cocoa_rto_sub",
+          "title": "A. RTO calculation",
           "sentences": [
-            {
-              "en": "A. RTO calculation: In order to calculate the RTO, CoCoA+ adopts the same algorithm used by TCP, which updates the RTO value based on measured Round Trip Times (RTTs).",
-              "vi": "A. Tính toán RTO: Để tính RTO, CoCoA+ áp dụng thuật toán tương tự như của TCP, cập nhật RTO dựa trên các giá trị thời gian truyền khứ hồi (RTT) đo được.",
-              "terms": [
-                "RTO calculation",
-                "TCP",
-                "RTT"
-              ]
-            },
             {
               "en": "According to Karn's algorithm [9], the RTT measurements should be considered only when the message was correctly delivered without retransmissions.",
               "vi": "Theo giải thuật Karn [9], các phép đo RTT chỉ được phép chấp nhận khi bản tin được phân phối thành công ngay lần đầu mà không cần truyền lại.",
@@ -410,79 +396,136 @@ const PAPER_1_DATA = {
                 "weak RTO",
                 "retransmissions"
               ]
+            }
+          ]
+        }
+      ],
+      "equations": [
+        {
+          "num": "1",
+          "code": "RTT_x ← R,  RTTVAR_x ← R / 2"
+        },
+        {
+          "num": "2",
+          "code": "RTT_x = (1 - α) RTT_x + α R"
+        },
+        {
+          "num": "3",
+          "code": "RTTVAR_x = (1 - β) RTTVAR_x + β |RTT_x - R|"
+        },
+        {
+          "num": "4",
+          "code": "RTO_x = RTT_x + K_x · RTTVAR_x"
+        },
+        {
+          "num": "5",
+          "code": "RTO_overall = λ_x · RTO_x + (1 - λ_x) RTO_overall"
+        },
+        {
+          "num": "6",
+          "code": "RTO_new = RTO_previous · VBF(RTO_init)"
+        },
+        {
+          "num": "7",
+          "code": "RTO_overall = (2 + RTO_overall) / 2"
+        }
+      ]
+    },
+    {
+      "id": "p1_sec_eval_section",
+      "title": "IV. PERFORMANCE EVALUATION",
+      "title_vi": "IV. ĐÁNH GIÁ HIỆU NĂNG MÔ PHỎNG",
+      "badge": "Section IV",
+      "paragraphs": [
+        {
+          "id": "p1_eval_desc",
+          "sentences": [
+            {
+              "en": "The performance evaluation is carried out by simulation using the Cooja platform, leveraging a ContikiOS implementation of CoCoA+ on a 6x6 grid of motes.",
+              "vi": "Đánh giá hiệu năng được tiến hành bằng mô phỏng trên nền tảng Cooja, sử dụng bản cài đặt ContikiOS của CoCoA+ trên mô hình lưới 6x6 nút cảm biến.",
+              "terms": [
+                "Cooja",
+                "ContikiOS",
+                "6x6 grid"
+              ]
             },
             {
-              "en": "Considering that it is not possible to know for an ACK to which transmission it belongs to, RTT samples are collected measuring the time between the first transmission and the arrival of the response, but only if two retransmissions at most are required.",
-              "vi": "Do không thể biết chắc một gói ACK nhận về tương ứng với lần phát nào (vấn nạn 'nhập nhằng RTT'), mẫu RTT được đo bằng khoảng thời gian từ lần phát đầu tiên đến lúc nhận được ACK, nhưng chỉ áp dụng khi số lần truyền lại không quá 2.",
+              "en": "In all scenarios, periodic CoAP traffic is considered with varying request periods T from 70s down to 0.5s to inject increasing data loads.",
+              "vi": "Trong mọi kịch bản, lưu lượng CoAP định kỳ được xem xét với chu kỳ yêu cầu T biến đổi từ 70s xuống 0.5s để bơm tải dữ liệu tăng dần vào mạng.",
               "terms": [
-                "ACK",
-                "RTT samples",
-                "retransmissions"
+                "periodic",
+                "request periods"
               ]
+            }
+          ]
+        }
+      ],
+      "figures": [
+        {
+          "id": "fig1",
+          "title": "Fig. 1, Network topology",
+          "src": "assets/p1_img_p3_1.png",
+          "caption": "Fig. 1. Network topology: 6x6 grid of nodes with node ID 1 as RPL border router and node ID 3 as CoAP server."
+        },
+        {
+          "id": "fig2",
+          "title": "Fig. 2, Carried load vs. offered load",
+          "src": "assets/p1_img_p4_1.png",
+          "caption": "Fig. 2. Carried load vs. nominal offered load for CoAP and CoCoA+."
+        },
+        {
+          "id": "fig3",
+          "title": "Fig. 3, Overall in-network MAC buffer overflows",
+          "src": "assets/p1_img_p4_2.png",
+          "caption": "Fig. 3. Overall in-network MAC buffer overflows as a function of offered load."
+        },
+        {
+          "id": "fig4",
+          "title": "Fig. 4, Average number of transmissions per successful transaction",
+          "src": "assets/p1_img_p4_3.png",
+          "caption": "Fig. 4. Average number of transmissions per successful transaction."
+        },
+        {
+          "id": "fig5_6_7_8",
+          "title": "Fig. 5-8, Pre-congestion analysis (T = 8s)",
+          "images": [
+            {
+              "src": "assets/p1_img_p5_1.png",
+              "caption": "Fig. 5. Average number of ACKs per transaction."
+            },
+            {
+              "src": "assets/p1_img_p5_2.png",
+              "caption": "Fig. 6. CoAP vs. CoCoA+ carried load per node, T = 8s."
+            },
+            {
+              "src": "assets/p1_img_p5_3.png",
+              "caption": "Fig. 7. CoAP operation, node ID 10, T = 8s."
+            },
+            {
+              "src": "assets/p1_img_p5_4.png",
+              "caption": "Fig. 8. CoCoA+ operation, node ID 10, T = 8s."
             }
           ]
         },
         {
-          "id": "p1_cocoa_math",
-          "sentences": [
+          "id": "fig9_10_11_12",
+          "title": "Fig. 9-12, Interfering Bursty Traffic Results",
+          "images": [
             {
-              "en": "For each destination, a node maintains: two smoothed mean RTT estimators (RTTstrong and RTTweak), two smoothed mean variance (RTTVARstrong and RTTVARweak), two RTO estimators (RTOstrong and RTOweak), and a comprehensive RTO (RTOoverall).",
-              "vi": "Với mỗi đích đến, nút mạng duy trì: hai bộ ước lượng RTT trung bình trượt làm mịn (RTTstrong và RTTweak), hai phương sai làm mịn (RTTVARstrong và RTTVARweak), hai bộ ước lượng RTO (RTOstrong và RTOweak), cùng giá trị RTO tổng hợp (RTOoverall).",
-              "terms": [
-                "RTTstrong",
-                "RTTweak",
-                "RTTVAR",
-                "RTOoverall"
-              ]
+              "src": "assets/p1_img_p6_1.png",
+              "caption": "Fig. 9. Carried load – periodic traffic."
             },
             {
-              "en": "The estimators are updated via Equations: RTTx = (1 - alpha)*RTTx + alpha*R; RTTVARx = (1 - beta)*RTTVARx + beta*|RTTx - R|; RTOx = RTTx + Kx*RTTVARx; RTOoverall = lambda_x*RTOx + (1 - lambda_x)*RTOoverall.",
-              "vi": "Các bộ ước lượng được cập nhật theo hệ công thức: RTTx = (1 - α)RTTx + αR; RTTVARx = (1 - β)RTTVARx + β|RTTx - R|; RTOx = RTTx + Kx·RTTVARx; RTOoverall = λx·RTOx + (1 - λx)RTOoverall.",
-              "terms": [
-                "alpha",
-                "beta",
-                "Kx",
-                "lambda_x"
-              ]
+              "src": "assets/p1_img_p6_2.png",
+              "caption": "Fig. 10. Transmissions per transaction – periodic traffic."
             },
             {
-              "en": "Recommended parameter values: alpha = 0.125, beta = 0.25, Kstrong = 4, Kweak = 1, lambda_strong = 0.5, and lambda_weak = 0.25. RTOinit is chosen with dithering from [RTOoverall, 1.5 * RTOoverall].",
-              "vi": "Các giá trị tham số khuyến nghị: α = 0.125, β = 0.25, Kstrong = 4, Kweak = 1, λstrong = 0.5, và λweak = 0.25. Giá trị RTOinit được chọn ngẫu nhiên với kỹ thuật rung dithering trong khoảng [RTOoverall, 1.5 · RTOoverall].",
-              "terms": [
-                "parameters",
-                "dithering",
-                "RTOinit"
-              ]
-            }
-          ]
-        },
-        {
-          "id": "p1_cocoa_backoff",
-          "sentences": [
-            {
-              "en": "B. Backoff policy: CoCoA+ introduces a variable backoff factor (VBF) to set the RTO for retransmissions: RTOnew = RTOprevious * VBF(RTOinit).",
-              "vi": "B. Chính sách thoái lui: CoCoA+ đưa ra hệ số thoái lui khả biến VBF (Variable Backoff Factor) để tính RTO cho các lần phát lại: RTOnew = RTOprevious · VBF(RTOinit).",
-              "terms": [
-                "backoff policy",
-                "VBF",
-                "RTO"
-              ]
+              "src": "assets/p1_img_p6_3.png",
+              "caption": "Fig. 11. Weak estimator failing to update RTOinit."
             },
             {
-              "en": "The VBF factor is set according to RTOinit: VBF = 3 if RTOinit < 1s; VBF = 1.5 if RTOinit > 3s; VBF = 2 if 1s <= RTOinit <= 3s.",
-              "vi": "Hệ số VBF được thiết lập dựa theo RTOinit: VBF = 3 nếu RTOinit < 1s (tránh phát lại dồn dập); VBF = 1.5 nếu RTOinit > 3s (tránh chờ quá lâu); VBF = 2 nếu RTOinit trong khoảng [1s, 3s] (tương đương BEB chuẩn).",
-              "terms": [
-                "VBF",
-                "BEB"
-              ]
-            },
-            {
-              "en": "C. Information aging: CoCoA+ introduces a mechanism to age RTO values when RTT updates are not received for a certain time, smoothly resetting RTOoverall toward default values.",
-              "vi": "C. Lão hóa thông tin: CoCoA+ đưa vào cơ chế làm lão hóa giá trị RTO khi không nhận được mẫu RTT mới trong một thời gian nhất định, kéo RTOoverall dần về mức mặc định để tránh lưu giữ trạng thái mạng lỗi thời.",
-              "terms": [
-                "information aging",
-                "RTOoverall"
-              ]
+              "src": "assets/p1_img_p6_4.png",
+              "caption": "Fig. 12. Weak estimator failing to adapt RTOinit."
             }
           ]
         }
@@ -491,11 +534,11 @@ const PAPER_1_DATA = {
     {
       "id": "p1_sec_shortcomings",
       "title": "V. COCOA+ SHORTCOMINGS",
-      "title_vi": "V. CÁC THIẾU SÓT VÀ NGUYÊN NHÂN CỐT LÕI CỦA COCOA+",
-      "badge": "Phân tích phản biện",
+      "title_vi": "V. CÁC THIẾU SÓT VÀ HẠN CHẾ CỦA COCOA+",
+      "badge": "Section V",
       "paragraphs": [
         {
-          "id": "p1_short_a",
+          "id": "p1_short_1",
           "sentences": [
             {
               "en": "A. RTO too close to RTT: When a sequence of similar RTTs is sampled, the RTTVAR variable tends to vanish, causing RTO to get dangerously close to measured RTT.",
@@ -515,58 +558,20 @@ const PAPER_1_DATA = {
               ]
             }
           ]
-        },
+        }
+      ],
+      "figures": [
         {
-          "id": "p1_short_b_c",
-          "sentences": [
+          "id": "fig13_14",
+          "title": "Fig. 13-14, RTO Abnormalities",
+          "images": [
             {
-              "en": "B. Lack of weak estimator update: The rule to avoid weak estimator update after more than two retransmissions leaves RTOinit frozen during heavy bursty periods, failing to respond to congestion.",
-              "vi": "B. Thiếu cập nhật bộ ước lượng yếu: Quy tắc ngừng cập nhật bộ ước lượng yếu khi có trên 2 lần truyền lại khiến RTOinit bị đóng băng trong các đợt lưu lượng bùng phát nặng nề, hoàn toàn mất khả năng phản ứng với tắc nghẽn.",
-              "terms": [
-                "weak estimator",
-                "retransmissions",
-                "congestion"
-              ]
+              "src": "assets/p1_img_p7_1.png",
+              "caption": "Fig. 13. Example of RTO increase as response to RTT decrease."
             },
             {
-              "en": "C. Insufficient weak estimator weight: Setting Kweak to 1 severely limits the impact of weak RTO, preventing timely adaptation during sudden load changes.",
-              "vi": "C. Trọng số bộ ước lượng yếu quá nhỏ: Việc đặt Kweak = 1 làm suy yếu nghiêm trọng tác động của RTO yếu, ngăn cản sự thích ứng kịp thời khi tải mạng thay đổi đột ngột.",
-              "terms": [
-                "Kweak",
-                "weak RTO",
-                "adaptation"
-              ]
-            }
-          ]
-        },
-        {
-          "id": "p1_short_d_e_f",
-          "sentences": [
-            {
-              "en": "D. RTO peaks in response to RTT decrease: If RTT rapidly decreases, RTTVAR updates using |SRTT - R| which spikes, artificially causing RTO to surge upward precisely when the network improves.",
-              "vi": "D. RTO tăng vọt nghịch lý khi RTT giảm: Khi RTT sụt giảm nhanh, RTTVAR lấy giá trị tuyệt đối |SRTT - R| khiến phương sai bị đội lên đột ngột, làm RTO tăng vọt giả tạo đúng vào lúc mạng đang thông thoáng.",
-              "terms": [
-                "RTO peaks",
-                "RTT decrease",
-                "RTTVAR"
-              ]
-            },
-            {
-              "en": "E. Double algorithms, double histories: Lack of aging for the weak estimator creates obsolete history spikes.",
-              "vi": "E. Tồn tại song song hai thuật toán và hai lịch sử: Việc thiếu cơ chế lão hóa cho bộ ước lượng yếu gây ra các đột biến RTOinit do vết tích lịch sử đã quá cũ.",
-              "terms": [
-                "weak estimator",
-                "aging"
-              ]
-            },
-            {
-              "en": "F. Excessive RTO growth: Cumulative back-off without upper capping can cause RTO to escalate to 200–300 seconds, causing unreasonable delays.",
-              "vi": "F. RTO phình to quá mức: Việc thoái lui dồn dập mà thiếu trần chặn trên trong các lần phát lại có thể khiến RTO bị thổi phồng lên 200–300 giây, gây độ trễ vô lý và tê liệt kết nối.",
-              "terms": [
-                "RTO growth",
-                "back-off",
-                "delays"
-              ]
+              "src": "assets/p1_img_p7_2.png",
+              "caption": "Fig. 14. Example of RTOinit spikes."
             }
           ]
         }
@@ -576,10 +581,10 @@ const PAPER_1_DATA = {
       "id": "p1_sec_pcocoa_algo",
       "title": "VI. COAP PRECISE CONGESTION CONTROL (pCoCoA)",
       "title_vi": "VI. THUẬT TOÁN ĐIỀU KHIỂN TẮC NGHẼN CHÍNH XÁC pCoCoA",
-      "badge": "Đề xuất mới",
+      "badge": "Section VI",
       "paragraphs": [
         {
-          "id": "p1_pcocoa_pillars",
+          "id": "p1_pcocoa_p1",
           "sentences": [
             {
               "en": "pCoCoA is based on two key pillars: (i) precise request-to-response mapping even during retransmissions via Transmission Counter (TC); (ii) enhanced RTO computation inspired by Linux TCP.",
@@ -592,79 +597,121 @@ const PAPER_1_DATA = {
               ]
             },
             {
-              "en": "The elective Transmission Counter (TC) option is set to 1 initially and incremented on each retransmission. The receiver echoes the TC in the ACK, eliminating RTT ambiguity and enabling instant detection of spurious retransmissions.",
-              "vi": "Tùy chọn Transmission Counter (TC) được gán bằng 1 ở lần phát đầu và tăng thêm 1 sau mỗi lần truyền lại. Phía nhận sẽ sao chép và gắn lại giá trị TC này trong bản tin ACK, loại bỏ hoàn toàn vấn nạn nhập nhằng RTT và cho phép phát hiện tức thì các lần truyền lại giả tạo.",
+              "en": "The elective Transmission Counter (TC) option is set to 1 initially and incremented on each retransmission. The receiver echoes the TC in the ACK, eliminating RTT ambiguity.",
+              "vi": "Tùy chọn Transmission Counter (TC) được gán bằng 1 ở lần phát đầu và tăng thêm 1 sau mỗi lần truyền lại. Phía nhận sẽ sao chép và gắn lại giá trị TC này trong bản tin ACK, loại bỏ hoàn toàn vấn nạn nhập nhằng RTT.",
               "terms": [
                 "TC",
                 "ACK",
-                "RTT ambiguity",
-                "spurious retransmissions"
-              ]
-            }
-          ]
-        },
-        {
-          "id": "p1_pcocoa_algo2_detail",
-          "sentences": [
-            {
-              "en": "Algorithm 2 computes RTO using maximum mean deviance (mdev_max): SRTO = SRTT + max(k * RTTVAR, mdev_max).",
-              "vi": "Giải thuật 2 tính toán RTO sử dụng độ lệch trung bình cực đại (mdev_max): SRTO = SRTT + max(k · RTTVAR, mdev_max).",
-              "terms": [
-                "Algorithm 2",
-                "mdev_max",
-                "SRTO",
-                "SRTT",
-                "RTTVAR"
-              ]
-            },
-            {
-              "en": "If a spurious retransmission is detected, k is raised to 6 (otherwise k = 4), which accelerates RTO growth to quickly prevent further unnecessary retransmissions.",
-              "vi": "Nếu phát hiện có truyền lại giả tạo, hệ số k được nâng lên 6 (bình thường k = 4), thúc đẩy RTO tăng nhanh hơn để lập tức ngăn chặn các lần phát lại thừa thãi kế tiếp.",
-              "terms": [
-                "spurious retransmission",
-                "k"
+                "RTT ambiguity"
               ]
             }
           ]
         }
+      ],
+      "algorithms": [
+        {
+          "name": "Algorithm 1: pCoCoA algorithm",
+          "code": "function SendAndReceive(CON)\n 1. TC = 1\n 2. CON.TC = TC\n 3. if(CON.dest not in known_dest)\n 4.    RTO = CoAP_DEFAULT_RTO\n 5. else\n 6.    RTO = known_dest[CON.dest]\n 7. RTO = RTO + rand() % (RTO / 2)\n 8. ACK = NULL\n 9. timestamp[] = Array(MAX_ATTEMPTS)\n10. while(TC < MAX_ATTEMPTS and ACK == NULL)\n11.    timestamp[TC] = system_time()\n12.    ACK = send(CON)\n13.    t = start_timer(RTO)\n14.    wait_until(ACK != NULL or t.expired)\n15.    if(t.expired)\n16.       TC = TC + 1\n17.       CON.TC = TC\n18.       RTO = VBF()\n19. if(ACK != NULL)\n20.    R = system_time() - timestamp[ACK.TC]\n21.    if(TC != ACK.TC)\n22.       ACK.spurious = True\n23. else\n24.    return\n25. RTO = RTOCalculation(R, ACK.spurious)\n26. known_dest[CON.dest] = RTO"
+        },
+        {
+          "name": "Algorithm 2: RTOCalculation algorithm",
+          "code": "function RTOCalculation(R, spurious)\n 1. SRTT = (1 - α)SRTT + αR\n 2. if(R < (SRTT - RTTVAR))\n 3.    RTTVAR = (1 - γ)RTTVAR + γ|SRTT - R|\n 4. else\n 5.    if(|SRTT - R| > RTTVAR)\n 6.       RTTVAR = (1 - β)RTTVAR + β|SRTT - R|\n 7.    else\n 8.       RTTVAR = (1 - α)RTTVAR + α|SRTT - R|\n 9. if(R > SRTT)\n10.    if(RTTVAR > mdev_max for 3 consecutive times)\n11.       mdev_max = average of the last 3 RTTVAR\n12.    else if(RTTVAR < mdev_max for 8 consecutive times)\n13.       mdev_max = (1 - β)mdev_max + β·RTTVAR\n14. if(spurious)\n15.    k = 6\n16. else\n17.    k = 4\n18. SRTO = SRTT + max(k·RTTVAR, mdev_max)\n19. RTO_init = (1 - δ)SRTO + δ·RTO_init"
+        }
       ]
     },
     {
-      "id": "p1_sec_eval",
-      "title": "VII. PERFORMANCE EVALUATION",
-      "title_vi": "VII. ĐÁNH GIÁ HIỆU NĂNG VÀ THỰC NGHIỆM",
-      "badge": "Kết quả thực nghiệm",
+      "id": "p1_sec_eval_results",
+      "title": "VII. pCoCoA PERFORMANCE EVALUATION",
+      "title_vi": "VII. KẾT QUẢ THỰC NGHIỆM ĐỐI CHIẾU PCOCOA",
+      "badge": "Section VII",
       "paragraphs": [
         {
-          "id": "p1_eval_1",
+          "id": "p1_res_desc",
           "sentences": [
             {
-              "en": "The evaluations were conducted using Cooja simulator and ContikiOS on a 6x6 grid topology with IEEE 802.15.4 and 6LoWPAN.",
-              "vi": "Các thử nghiệm được thực hiện trên môi trường mô phỏng Cooja với hệ điều hành ContikiOS, trên mô hình mạng lưới ma trận 6x6 nút sử dụng chuẩn IEEE 802.15.4 và 6LoWPAN.",
+              "en": "pCoCoA is evaluated against CoAP, CoCoA+, 4-state-strong, and CoCoA-E across periodic and bursty traffic patterns.",
+              "vi": "pCoCoA được đánh giá đối chứng với CoAP, CoCoA+, 4-state-strong và CoCoA-E qua cả hai mô hình lưu lượng định kỳ và bùng phát.",
               "terms": [
-                "Cooja",
-                "ContikiOS",
-                "IEEE 802.15.4",
-                "6LoWPAN"
+                "4-state-strong",
+                "CoCoA-E"
               ]
             },
             {
-              "en": "Under periodic traffic with 8s period, pCoCoA achieves an average retransmission count drastically lower than CoCoA+ and 4-state-strong, while matching their high throughput.",
-              "vi": "Dưới lưu lượng định kỳ với chu kỳ 8s, pCoCoA đạt số lần truyền lại trung bình thấp hơn vượt trội so với CoCoA+ và 4-state-strong, trong khi vẫn bảo toàn mức thông lượng cao tương đương.",
+              "en": "Under periodic traffic (T = 8s), pCoCoA drastically reduces spurious retransmissions by leveraging mdev_max to bound the RTO lower limit.",
+              "vi": "Dưới lưu lượng định kỳ (T = 8s), pCoCoA cắt giảm ngoạn mục số lần truyền lại giả tạo nhờ dùng mdev_max chặn dưới RTO an toàn.",
               "terms": [
-                "periodic traffic",
-                "retransmission count",
-                "throughput"
+                "mdev_max",
+                "spurious retransmissions"
               ]
+            }
+          ]
+        }
+      ],
+      "figures": [
+        {
+          "id": "fig15_16",
+          "title": "Fig. 15-16, Performance at T = 8s",
+          "images": [
+            {
+              "src": "assets/p1_img_p10_1.png",
+              "caption": "Fig. 15. CoAP vs. CoCoA+ vs. pCoCoA carried load per node, T = 8s."
             },
             {
-              "en": "In bursty interfering traffic scenarios, CoCoA-E collapses due to improper gamma dampening, and CoCoA+ suffers from frozen RTOinit, while pCoCoA maintains flawless convergence and superior carried load.",
-              "vi": "Trong kịch bản lưu lượng bùng nổ gây nhiễu, CoCoA-E bị suy sụp do hệ số suy giảm gamma bất cập, CoCoA+ bị đóng băng RTOinit, trong khi pCoCoA duy trì sự hội tụ hoàn hảo và đạt tải thực truyền tải (carried load) vượt trội.",
-              "terms": [
-                "bursty traffic",
-                "CoCoA-E",
-                "carried load"
-              ]
+              "src": "assets/p1_img_p11_1.png",
+              "caption": "Fig. 16. Node average retransmissions, T = 8s."
+            }
+          ]
+        },
+        {
+          "id": "fig17",
+          "title": "Fig. 17, Retransmission Dispersion",
+          "images": [
+            {
+              "src": "assets/p1_img_p11_2.png",
+              "caption": "(a) CoCoA+"
+            },
+            {
+              "src": "assets/p1_img_p11_3.png",
+              "caption": "(b) 4-state-strong"
+            },
+            {
+              "src": "assets/p1_img_p11_4.png",
+              "caption": "(c) CoCoA-E"
+            },
+            {
+              "src": "assets/p1_img_p11_5.png",
+              "caption": "(d) pCoCoA"
+            }
+          ],
+          "caption": "Fig. 17. Retransmission dispersion over time across all nodes."
+        },
+        {
+          "id": "fig18_19_20_21",
+          "title": "Fig. 18-21, Bursty Traffic & k Adaptation",
+          "images": [
+            {
+              "src": "assets/p1_img_p12_1.png",
+              "caption": "Fig. 18 (a) CoCoA+ without k adaptation"
+            },
+            {
+              "src": "assets/p1_img_p12_2.png",
+              "caption": "Fig. 18 (b) pCoCoA with k = 6 adaptation"
+            },
+            {
+              "src": "assets/p1_img_p12_3.png",
+              "caption": "Fig. 19. Carried load – interfering bursty traffic."
+            },
+            {
+              "src": "assets/p1_img_p12_4.png",
+              "caption": "Fig. 20. Transmissions per transaction – bursty traffic."
+            },
+            {
+              "src": "assets/p1_img_p13_1.png",
+              "caption": "Fig. 21 (a) CoCoA+ failing to update RTOinit"
+            },
+            {
+              "src": "assets/p1_img_p13_2.png",
+              "caption": "Fig. 21 (b) pCoCoA maintaining continuous RTOinit updates"
             }
           ]
         }
@@ -673,8 +720,8 @@ const PAPER_1_DATA = {
     {
       "id": "p1_sec_conc",
       "title": "VIII. CONCLUSIONS",
-      "title_vi": "VIII. KẾT LUẬN",
-      "badge": "Tổng kết",
+      "title_vi": "VIII. KẾT LUẬN TOÀN DIỆN",
+      "badge": "Section VIII",
       "paragraphs": [
         {
           "id": "p1_conc_1",

@@ -1140,6 +1140,244 @@ body {
   font-weight: 600;
 }
 
+/* ==========================================================================
+   ACADEMIC TWO-COLUMN JOURNAL LAYOUT & FIGURES (BỐ CỤC & HÌNH ẢNH Y NGUYÊN)
+   ========================================================================== */
+
+.journal-header-band {
+  border-bottom: 2px solid var(--text-primary);
+  font-family: var(--font-mono);
+  font-size: 0.775rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  padding-bottom: 0.4rem;
+  margin-bottom: 1.5rem;
+  color: var(--text-muted);
+  display: flex;
+  justify-content: space-between;
+}
+
+.journal-title-block {
+  text-align: center;
+  margin-bottom: 2rem;
+  padding-bottom: 1.5rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.journal-paper-title {
+  font-family: var(--font-serif);
+  font-size: 2.1rem;
+  font-weight: 800;
+  color: var(--text-primary);
+  line-height: 1.25;
+  margin-bottom: 0.75rem;
+  letter-spacing: -0.01em;
+}
+
+.journal-paper-title-vi {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--primary);
+  line-height: 1.4;
+  margin-bottom: 0.85rem;
+}
+
+.journal-authors {
+  font-size: 1.05rem;
+  font-weight: 600;
+  color: var(--text-primary);
+  margin-bottom: 0.35rem;
+}
+
+.journal-affiliations {
+  font-size: 0.825rem;
+  color: var(--text-muted);
+  font-style: italic;
+  max-width: 850px;
+  margin: 0 auto 0.75rem auto;
+  line-height: 1.4;
+}
+
+.journal-abstract-box {
+  background: var(--bg-hover);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 1.15rem 1.35rem;
+  margin-bottom: 2rem;
+  font-size: 0.925rem;
+  line-height: 1.65;
+  text-align: justify;
+}
+
+.journal-index-terms {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-secondary);
+  border-top: 1px solid var(--border-color);
+  padding-top: 0.5rem;
+}
+
+.journal-index-terms strong {
+  color: var(--text-primary);
+}
+
+/* Two-column text flow */
+.journal-two-columns {
+  column-count: 2;
+  column-gap: 2.5rem;
+  column-rule: 1px solid var(--border-color);
+  text-align: justify;
+}
+
+@media (max-width: 900px) {
+  .journal-two-columns {
+    column-count: 1;
+    column-rule: none;
+  }
+}
+
+/* Academic Figures */
+.academic-figure {
+  break-inside: avoid;
+  margin: 1.5rem 0;
+  text-align: center;
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-sm);
+  padding: 0.85rem;
+  box-shadow: var(--shadow-sm);
+}
+
+.academic-figure img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  display: block;
+  margin: 0 auto 0.6rem auto;
+}
+
+.figure-caption {
+  font-size: 0.825rem;
+  font-weight: 500;
+  color: var(--text-secondary);
+  line-height: 1.45;
+  text-align: justify;
+  margin-top: 0.5rem;
+}
+
+.figure-caption strong {
+  color: var(--text-primary);
+}
+
+/* Multi-image figure grid */
+.figure-grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+.figure-grid-4 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+}
+
+/* Academic Equations */
+.academic-equation {
+  break-inside: avoid;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.6rem 1rem;
+  margin: 0.85rem 0;
+  background: var(--bg-hover);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: 0.875rem;
+  border-left: 3px solid var(--primary);
+}
+
+.academic-equation .eq-body {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  color: var(--text-primary);
+}
+
+.academic-equation .eq-num {
+  font-weight: 700;
+  color: var(--text-muted);
+  margin-left: 1rem;
+}
+
+/* Academic Algorithms */
+.academic-algorithm {
+  break-inside: avoid;
+  border-top: 2.5px solid var(--text-primary);
+  border-bottom: 2.5px solid var(--text-primary);
+  padding: 0.85rem 0;
+  margin: 1.75rem 0;
+  font-size: 0.825rem;
+  background: var(--bg-surface);
+}
+
+.algorithm-title {
+  font-family: var(--font-sans);
+  font-weight: 800;
+  font-size: 0.875rem;
+  color: var(--text-primary);
+  border-bottom: 1.5px solid var(--text-primary);
+  padding-bottom: 0.4rem;
+  margin-bottom: 0.65rem;
+}
+
+.algorithm-code {
+  font-family: var(--font-mono);
+  white-space: pre;
+  line-height: 1.5;
+  color: var(--text-primary);
+  overflow-x: auto;
+  font-size: 0.8rem;
+}
+
+/* 1:1 Original PDF Page Viewer */
+.pdf-page-viewer {
+  display: flex;
+  flex-direction: column;
+  gap: 2.5rem;
+  align-items: center;
+}
+
+.pdf-page-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-xl);
+  max-width: 880px;
+  width: 100%;
+  overflow: hidden;
+  position: relative;
+}
+
+.pdf-page-header {
+  background: var(--bg-hover);
+  padding: 0.65rem 1.25rem;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid var(--border-color);
+  font-size: 0.825rem;
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.pdf-page-img {
+  width: 100%;
+  height: auto;
+  display: block;
+}
+
 /* Responsive adjustments */
 @media (max-width: 1200px) {
   .main-layout {
