@@ -35,6 +35,38 @@ document.addEventListener('DOMContentLoaded', () => {
   setupGlobalEvents();
 });
 
+// Fast Sentence Index Map
+let paperSentenceIndex = new Map();
+
+function buildSentenceIndex(paper) {
+  paperSentenceIndex.clear();
+  if (paper.pages) {
+    paper.pages.forEach(p => {
+      [p.top_content, p.left_column, p.right_column].forEach(col => {
+        if (!col) return;
+        col.forEach(b => {
+          if (!b.sentences) return;
+          b.sentences.forEach(s => {
+            paperSentenceIndex.set(s.id, s);
+          });
+        });
+      });
+    });
+  }
+  if (paper.sections) {
+    paper.sections.forEach(sec => {
+      if (!sec.paragraphs) return;
+      sec.paragraphs.forEach(para => {
+        if (!para.sentences) return;
+        para.sentences.forEach((s, sIdx) => {
+          paperSentenceIndex.set(`${para.id}_s${sIdx}`, s);
+          if (s.id) paperSentenceIndex.set(s.id, s);
+        });
+      });
+    });
+  }
+}
+
 // Switch between Paper 1, Paper 2
 function switchPaper(paperId) {
   currentPaperId = paperId;
@@ -46,6 +78,7 @@ function switchPaper(paperId) {
   document.getElementById('tabComparison').classList.remove('active');
 
   const paperData = paperId === 'paper1' ? PAPER_1_DATA : PAPER_2_DATA;
+  buildSentenceIndex(paperData);
   
   renderTableOfContents(paperData);
   renderPaperContent(paperData);
@@ -74,14 +107,46 @@ function setTranslationMode(mode) {
 // Render Table of Contents
 function renderTableOfContents(paper) {
   tocContainer.innerHTML = '';
-  document.getElementById('sectionCountBadge').innerText = `${paper.sections.length} mục`;
+  const totalSentences = paper.total_sentences || 0;
+  const pageCount = paper.page_count || (paper.pages ? paper.pages.length : 0);
+  
+  const countBadge = document.getElementById('sectionCountBadge');
+  if (countBadge) {
+    countBadge.innerText = `${pageCount} trang • ${totalSentences} câu`;
+  }
 
-  paper.sections.forEach((sec, idx) => {
+  // Quick Page Jump Navigation
+  const pageNavWrapper = document.createElement('div');
+  pageNavWrapper.className = 'toc-page-nav';
+  pageNavWrapper.innerHTML = `
+    <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem; display: flex; justify-content: space-between;">
+      <span>Nhảy đến trang:</span>
+      <span style="color: var(--primary); font-weight: 800;">${pageCount} trang</span>
+    </div>
+    <div class="toc-page-pills" style="display: flex; flex-wrap: wrap; gap: 0.35rem; margin-bottom: 1rem;">
+      ${Array.from({ length: pageCount }, (_, i) => i + 1).map(p => `
+        <button class="pill-btn ${p === 1 ? 'active' : ''}" style="padding: 0.2rem 0.5rem; font-size: 0.75rem; min-width: 28px; text-align: center;" onclick="smoothScrollTo('paper_page_${p}', event)">
+          Tr.${p}
+        </button>
+      `).join('')}
+    </div>
+    <div style="font-size: 0.75rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 0.4rem;">
+      Mục lục đề mục:
+    </div>
+  `;
+  tocContainer.appendChild(pageNavWrapper);
+
+  // Sections list from sections_toc
+  const secList = paper.sections_toc || paper.sections || [];
+  secList.forEach((sec, idx) => {
     const li = document.createElement('li');
     li.className = 'toc-item' + (idx === 0 ? ' active' : '');
+    const titleText = sec.title || '';
+    const pageNumText = sec.page ? `<span class="toc-page-tag" style="font-size: 0.7rem; color: var(--text-muted); margin-left: auto; flex-shrink: 0;">Tr.${sec.page}</span>` : '';
     li.innerHTML = `
-      <a href="#${sec.id}" onclick="smoothScrollTo('${sec.id}', event)">
-        ${sec.title}
+      <a href="#${sec.id}" onclick="smoothScrollTo('${sec.id}', event)" style="display: flex; align-items: center; justify-content: space-between; gap: 0.4rem;">
+        <span style="overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">${escapeHtml(titleText)}</span>
+        ${pageNumText}
       </a>
     `;
     tocContainer.appendChild(li);
@@ -277,6 +342,88 @@ function renderPdfPageViewer(paper) {
   paperContentArea.innerHTML = html;
 }
 
+// Render Block HTML for Academic Page Flow
+function renderBlockHtml(b) {
+  let sentencesHtml = '';
+  if (b.sentences && b.sentences.length > 0) {
+    b.sentences.forEach(sObj => {
+      const tokenizedEn = tokenizeSentenceWords(sObj.en, sObj.id);
+      sentencesHtml += `
+        <span class="sentence-token" id="${sObj.id}"
+              data-block-id="${b.id}"
+              onmouseenter="handleSentenceHover('${sObj.id}', event)"
+              onmouseleave="handleSentenceLeave('${sObj.id}')"
+              onclick="handleSentenceClick('${sObj.id}', event)">
+          ${tokenizedEn}
+        </span>
+      `;
+      if (currentMode === 'inline') {
+        sentencesHtml += `<span class="inline-vi-translation">🇻🇳 <strong>Dịch:</strong> ${escapeHtml(sObj.vi)}</span>`;
+      }
+    });
+  } else {
+    sentencesHtml = escapeHtml(b.raw_text || '');
+  }
+
+  // 1. Heading
+  if (b.is_heading) {
+    const isSub = b.heading_level === 2;
+    return `
+      <h3 class="paper-block-heading ${isSub ? 'sub-heading' : ''}" id="${b.id}">
+        ${sentencesHtml}
+      </h3>
+    `;
+  }
+
+  // 2. Table
+  if (b.is_table) {
+    return `
+      <div class="academic-table" id="${b.id}">
+        ${b.table_img ? `
+          <div style="margin-bottom: 0.5rem;">
+            <img src="${b.table_img}" alt="${escapeHtml(b.raw_text)}" style="max-width: 100%; height: auto; border-radius: 4px; border: 1px solid var(--border-color);" loading="lazy">
+          </div>
+        ` : ''}
+        <div class="table-caption" style="font-size: 0.85rem; font-weight: 700; color: var(--primary);">
+          ${sentencesHtml}
+        </div>
+      </div>
+    `;
+  }
+
+  // 3. Figure
+  if (b.is_figure) {
+    return `
+      <div class="academic-figure" id="${b.id}">
+        ${b.figure_img ? `
+          <div style="margin-bottom: 0.5rem;">
+            <img src="${b.figure_img}" alt="${escapeHtml(b.raw_text)}" style="max-width: 100%; height: auto; border-radius: 4px; border: 1px solid var(--border-color);" loading="lazy">
+          </div>
+        ` : ''}
+        <div class="figure-caption">
+          ${sentencesHtml}
+        </div>
+      </div>
+    `;
+  }
+
+  // 4. Equation
+  if (b.is_equation) {
+    return `
+      <div class="academic-equation" id="${b.id}">
+        <span class="eq-body">${sentencesHtml}</span>
+      </div>
+    `;
+  }
+
+  // 5. Normal Paragraph
+  return `
+    <p class="paper-paragraph" id="${b.id}">
+      ${sentencesHtml}
+    </p>
+  `;
+}
+
 // Render Main Paper Content
 function renderPaperContent(paper) {
   if (currentMode === 'pages') {
@@ -289,15 +436,11 @@ function renderPaperContent(paper) {
     return;
   }
 
-  // Find Abstract Section (if any)
-  const abstractSec = paper.sections.find(s => s.is_abstract || s.id.includes('abstract'));
-  const bodySections = paper.sections.filter(s => s !== abstractSec);
-
   let html = `
     <!-- Top Journal Meta Header -->
     <div style="border-bottom: 2px solid var(--text-primary); padding-bottom: 0.45rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em;">
       <span>🏛️ ${paper.journal_header || paper.venue}</span>
-      <span class="badge-tag" style="background: var(--primary-light); color: var(--primary);">KỸ THUẬT TRUYỀN THÔNG</span>
+      <span class="badge-tag" style="background: var(--primary-light); color: var(--primary);">KỸ THUẬT TRUYỀN THÔNG • ${paper.page_count} TRANG • 100% ĐẦY ĐỦ</span>
     </div>
 
     <!-- Paper Title Block -->
@@ -313,250 +456,161 @@ function renderPaperContent(paper) {
         <span>🔗 <strong>DOI:</strong> <a href="${paper.doi}" target="_blank" style="color: var(--primary); text-decoration: underline;">${paper.doi}</a></span>
       </div>
     </header>
+
+    <!-- Reading Order Notice Banner -->
+    <div class="reading-flow-banner" style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 0.65rem;">
+      <div>
+        <strong style="color: var(--text-primary);">📖 Thứ tự đọc chuẩn 2 cột:</strong> Đọc <strong>Cột Trái</strong> từ trên xuống dưới ➔ Đọc <strong>Cột Phải</strong> từ trên xuống dưới ➔ Chuyển sang Trang tiếp theo.
+      </div>
+      <div style="display: flex; gap: 0.5rem; align-items: center;">
+        <span class="badge-tag" style="background: var(--accent-teal-light); color: var(--accent-teal); font-weight: 700;">👆 Bấm 1 lần: Chọn câu</span>
+        <span class="badge-tag" style="background: var(--primary-light); color: var(--primary); font-weight: 700;">👆 Bấm lần 2: Dịch từ</span>
+      </div>
+    </div>
   `;
 
-  // Abstract & Index Terms Box (Full width)
-  if (abstractSec) {
-    let abstractSentencesHtml = '';
-    abstractSec.paragraphs.forEach(para => {
-      para.sentences.forEach((sObj, sIdx) => {
-        const sentenceId = `${para.id}_s${sIdx}`;
-        const tokenizedEn = tokenizeSentenceWords(sObj.en, sentenceId);
-        abstractSentencesHtml += `
-          <span class="sentence-token" id="${sentenceId}"
-                data-para-id="${para.id}"
-                data-sentence-idx="${sIdx}"
-                onmouseenter="handleSentenceHover('${sentenceId}', event)"
-                onmouseleave="handleSentenceLeave('${sentenceId}')"
-                onclick="handleSentenceClick('${sentenceId}', event)">
-            ${tokenizedEn}
-          </span>
-        `;
-        if (currentMode === 'inline') {
-          abstractSentencesHtml += `<span class="inline-vi-translation">🇻🇳 <strong>Dịch:</strong> ${sObj.vi}</span>`;
-        }
-      });
-    });
-
-    html += `
-      <div class="journal-abstract-box" id="${abstractSec.id}" style="background: var(--bg-hover); border: 1px solid var(--border-color); border-radius: var(--radius-sm); padding: 1.25rem 1.5rem; margin-bottom: 2rem;">
-        <div style="line-height: 1.7; margin-bottom: 0.85rem; text-align: justify;">
-          <strong style="font-family: var(--font-serif); font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-primary);">Abstract</strong> — ${abstractSentencesHtml}
-        </div>
-        <div style="margin-bottom: 0.85rem; padding-top: 0.75rem; border-top: 1px dashed var(--border-color); font-size: 0.88rem; color: var(--text-secondary); line-height: 1.6;">
-          <strong style="color: var(--primary);">🇻🇳 Tóm tắt chuyên ngành (Kỹ Thuật Truyền Thông):</strong> ${paper.summary_vi}
-        </div>
-        ${paper.index_terms ? `
-        <div style="font-size: 0.825rem; color: var(--text-muted); padding-top: 0.55rem; border-top: 1px solid var(--border-color);">
-          <strong style="color: var(--text-primary); text-transform: uppercase; letter-spacing: 0.04em;">Index Terms —</strong> ${paper.index_terms}
-        </div>
-        ` : ''}
-      </div>
-    `;
-  }
-
-  // 2-Column Academic Journal Text Flow
-  html += `<div class="journal-two-columns">`;
-
-  bodySections.forEach(sec => {
-    html += `
-      <section class="paper-section" id="${sec.id}" style="margin-bottom: 2rem; break-inside: auto;">
-        <div class="section-header" style="border-bottom: 1.5px solid var(--text-primary); padding-bottom: 0.35rem; margin-bottom: 0.85rem; break-after: avoid;">
-          <div style="display: flex; align-items: baseline; justify-content: space-between; flex-wrap: wrap; width: 100%;">
-            <h3 class="section-title-en" style="font-family: var(--font-serif); font-size: 1.05rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.02em; margin: 0; color: var(--text-primary);">${sec.title}</h3>
-            ${sec.badge ? `<span class="badge-tag">${sec.badge}</span>` : ''}
+  // Render each page sequentially
+  if (paper.pages && paper.pages.length > 0) {
+    paper.pages.forEach(page => {
+      html += `
+        <div class="academic-page-sheet" id="paper_page_${page.page_num}">
+          <div class="page-sheet-header">
+            <div style="display: flex; align-items: center; gap: 0.5rem; flex-wrap: wrap;">
+              <span class="badge-page-num">📄 TRANG ${page.page_num} / ${paper.page_count}</span>
+              <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">${paper.journal_header}</span>
+            </div>
+            <div style="font-size: 0.75rem; color: var(--text-muted);">
+              Thứ tự đọc: <strong>◀ Cột Trái (trên ➔ dưới)</strong> ➔ <strong>Cột Phải (trên ➔ dưới) ▶</strong>
+            </div>
           </div>
-          <div class="section-title-vi" style="font-size: 0.82rem; color: var(--primary); font-weight: 600; margin-top: 0.2rem;">${sec.title_vi}</div>
-        </div>
-    `;
+      `;
 
-    // Figures placed at the TOP of the section (like Fig. 1 at the top of Section IV!)
-    if (sec.figures_top && sec.figures_top.length > 0) {
-      sec.figures_top.forEach(fig => {
-        html += renderAcademicFigure(fig);
-      });
-    }
-
-    // Paragraphs
-    if (sec.paragraphs) {
-      sec.paragraphs.forEach(para => {
-        html += `<p class="paper-paragraph" id="${para.id}" style="margin-bottom: 1rem; text-align: justify; line-height: 1.68;">`;
-        
-        para.sentences.forEach((sObj, sIdx) => {
-          const sentenceId = `${para.id}_s${sIdx}`;
-          const tokenizedEn = tokenizeSentenceWords(sObj.en, sentenceId);
-          
-          html += `
-            <span class="sentence-token" id="${sentenceId}"
-                  data-para-id="${para.id}"
-                  data-sentence-idx="${sIdx}"
-                  onmouseenter="handleSentenceHover('${sentenceId}', event)"
-                  onmouseleave="handleSentenceLeave('${sentenceId}')"
-                  onclick="handleSentenceClick('${sentenceId}', event)">
-              ${tokenizedEn}
-            </span>
-          `;
-
-          if (currentMode === 'inline') {
-            html += `
-              <span class="inline-vi-translation">
-                🇻🇳 <strong>Dịch nghĩa:</strong> ${sObj.vi}
-              </span>
-            `;
-          }
+      // Top content (if page 1)
+      if (page.top_content && page.top_content.length > 0) {
+        html += `<div class="page-top-content" style="margin-bottom: 1.25rem;">`;
+        page.top_content.forEach(b => {
+          html += renderBlockHtml(b);
         });
+        html += `</div>`;
+      }
 
-        html += `</p>`;
-      });
-    }
+      // 2-Column Grid
+      html += `
+        <div class="page-columns-grid">
+          <div class="paper-col col-left" data-page="${page.page_num}" data-column="left">
+            <div class="col-indicator">◀ CỘT TRÁI (TOP-TO-BOTTOM)</div>
+            ${page.left_column.map(b => renderBlockHtml(b)).join('')}
+          </div>
+          <div class="paper-col col-right" data-page="${page.page_num}" data-column="right">
+            <div class="col-indicator">CỘT PHẢI (TOP-TO-BOTTOM) ▶</div>
+            ${page.right_column.map(b => renderBlockHtml(b)).join('')}
+          </div>
+        </div>
+      `;
 
-    // Equations
-    if (sec.equations && sec.equations.length > 0) {
-      sec.equations.forEach(eq => {
-        html += renderAcademicEquation(eq);
-      });
-    }
-
-    // Tables (like Table I in Section II, Table II in Section IV)
-    if (sec.tables && sec.tables.length > 0) {
-      sec.tables.forEach(tbl => {
-        html += renderAcademicTable(tbl);
-      });
-    }
-
-    // Algorithms
-    if (sec.algorithms && sec.algorithms.length > 0) {
-      sec.algorithms.forEach(algo => {
-        html += renderAcademicAlgorithm(algo);
-      });
-    }
-
-    // Figures placed after paragraphs
-    if (sec.figures && sec.figures.length > 0) {
-      sec.figures.forEach(fig => {
-        html += renderAcademicFigure(fig);
-      });
-    }
-
-    html += `</section>`;
-  });
-
-  html += `</div>`; // Close .journal-two-columns
+      html += `</div>`; // Close .academic-page-sheet
+    });
+  }
 
   paperContentArea.innerHTML = html;
 }
 
 // Render Dual Column Mode (English on Left, Vietnamese on Right)
 function renderDualColumn(paper) {
-  let leftHtml = `
-    <header class="paper-hero">
-      <div class="category-badge" style="margin-bottom: 0.5rem;">English Original</div>
-      <h1 class="paper-title-en" style="font-size: 1.4rem;">${paper.title}</h1>
-      <div style="font-size: 0.85rem; color: var(--text-muted); margin-top: 0.5rem;">${paper.authors}</div>
-    </header>
-  `;
-
-  let rightHtml = `
-    <header class="paper-hero">
-      <div class="category-badge" style="margin-bottom: 0.5rem; background: var(--accent-teal-light); color: var(--accent-teal);">Bản Dịch Tiếng Việt (Kỹ Thuật Truyền Thông)</div>
-      <h1 class="paper-title-vi" style="font-size: 1.4rem; color: var(--primary);">${paper.title_vi}</h1>
-      <div style="font-size: 0.85rem; color: var(--text-secondary); margin-top: 0.5rem;">${paper.summary_vi}</div>
-    </header>
-  `;
-
-  paper.sections.forEach(sec => {
-    leftHtml += `
-      <section class="paper-section" id="${sec.id}_en">
-        <div class="section-header">
-          <h3 class="section-title-en">${sec.title}</h3>
-        </div>
-    `;
-
-    rightHtml += `
-      <section class="paper-section" id="${sec.id}_vi">
-        <div class="section-header">
-          <h3 class="section-title-en" style="color: var(--primary);">${sec.title_vi}</h3>
-        </div>
-    `;
-
-    if (sec.figures_top && sec.figures_top.length > 0) {
-      sec.figures_top.forEach(fig => {
-        leftHtml += renderAcademicFigure(fig);
-        rightHtml += renderAcademicFigure(fig);
-      });
-    }
-
-    if (sec.paragraphs) {
-      sec.paragraphs.forEach(para => {
-        leftHtml += `<p class="paper-paragraph">`;
-        rightHtml += `<p class="paper-paragraph">`;
-
-        para.sentences.forEach((sObj, sIdx) => {
-          const sentenceId = `${para.id}_s${sIdx}`;
-          const tokenizedEn = tokenizeSentenceWords(sObj.en, sentenceId);
-
-          leftHtml += `
-            <span class="sentence-token" id="dual_en_${sentenceId}"
-                  onmouseenter="syncDualHover('${sentenceId}', true)"
-                  onmouseleave="syncDualHover('${sentenceId}', false)"
-                  onclick="handleSentenceClick('${sentenceId}', event)">
-              ${tokenizedEn}
-            </span>
-          `;
-
-          rightHtml += `
-            <span class="sentence-token" id="dual_vi_${sentenceId}"
-                  style="color: var(--text-primary); font-weight: 500;"
-                  onmouseenter="syncDualHover('${sentenceId}', true)"
-                  onmouseleave="syncDualHover('${sentenceId}', false)">
-              ${sObj.vi}&nbsp;
-            </span>
-          `;
-        });
-
-        leftHtml += `</p>`;
-        rightHtml += `</p>`;
-      });
-    }
-
-    if (sec.equations && sec.equations.length > 0) {
-      sec.equations.forEach(eq => {
-        leftHtml += renderAcademicEquation(eq);
-        rightHtml += renderAcademicEquation(eq);
-      });
-    }
-
-    if (sec.tables && sec.tables.length > 0) {
-      sec.tables.forEach(tbl => {
-        leftHtml += renderAcademicTable(tbl);
-        rightHtml += renderAcademicTable(tbl);
-      });
-    }
-
-    if (sec.algorithms && sec.algorithms.length > 0) {
-      sec.algorithms.forEach(algo => {
-        leftHtml += renderAcademicAlgorithm(algo);
-        rightHtml += renderAcademicAlgorithm(algo);
-      });
-    }
-
-    if (sec.figures && sec.figures.length > 0) {
-      sec.figures.forEach(fig => {
-        leftHtml += renderAcademicFigure(fig);
-        rightHtml += renderAcademicFigure(fig);
-      });
-    }
-
-    leftHtml += `</section>`;
-    rightHtml += `</section>`;
-  });
-
-  paperContentArea.innerHTML = `
-    <div class="dual-container">
-      <div class="dual-column">${leftHtml}</div>
-      <div class="dual-column" style="background: var(--bg-hover);">${rightHtml}</div>
+  let html = `
+    <!-- Dual Column Header -->
+    <div style="border-bottom: 2px solid var(--text-primary); padding-bottom: 0.45rem; margin-bottom: 1.5rem; display: flex; justify-content: space-between; align-items: center; font-size: 0.8rem; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">
+      <span>🏛️ ${paper.journal_header} (CHẾ ĐỘ SONG NGỮ ANH - VIỆT)</span>
+      <span class="badge-tag" style="background: var(--primary-light); color: var(--primary);">2 CỘT SONG SONG</span>
     </div>
   `;
+
+  if (paper.pages && paper.pages.length > 0) {
+    paper.pages.forEach(page => {
+      const allBlocks = (page.top_content || []).concat(page.left_column || []).concat(page.right_column || []);
+
+      let enCol = '';
+      let viCol = '';
+
+      allBlocks.forEach(b => {
+        if (b.is_heading) {
+          enCol += `<h3 class="paper-block-heading" id="dual_en_${b.id}">${escapeHtml(b.raw_text)}</h3>`;
+          viCol += `<h3 class="paper-block-heading" style="color: var(--primary);">${escapeHtml(b.sentences && b.sentences[0] ? b.sentences[0].vi : b.raw_text)}</h3>`;
+        } else if (b.is_table) {
+          enCol += `
+            <div class="academic-table" id="dual_en_${b.id}">
+              ${b.table_img ? `<img src="${b.table_img}" alt="Table" style="max-width: 100%; border-radius: 4px;" loading="lazy">` : ''}
+              <div class="table-caption">${escapeHtml(b.raw_text)}</div>
+            </div>
+          `;
+          viCol += `
+            <div class="academic-table" id="dual_vi_${b.id}">
+              ${b.table_img ? `<img src="${b.table_img}" alt="Table" style="max-width: 100%; border-radius: 4px;" loading="lazy">` : ''}
+              <div class="table-caption" style="color: var(--primary);">${escapeHtml(b.sentences && b.sentences[0] ? b.sentences[0].vi : b.raw_text)}</div>
+            </div>
+          `;
+        } else if (b.is_figure) {
+          enCol += `
+            <div class="academic-figure" id="dual_en_${b.id}">
+              ${b.figure_img ? `<img src="${b.figure_img}" alt="Figure" style="max-width: 100%; border-radius: 4px;" loading="lazy">` : ''}
+              <div class="figure-caption">${escapeHtml(b.raw_text)}</div>
+            </div>
+          `;
+          viCol += `
+            <div class="academic-figure" id="dual_vi_${b.id}">
+              ${b.figure_img ? `<img src="${b.figure_img}" alt="Figure" style="max-width: 100%; border-radius: 4px;" loading="lazy">` : ''}
+              <div class="figure-caption" style="color: var(--primary);">${escapeHtml(b.sentences && b.sentences[0] ? b.sentences[0].vi : b.raw_text)}</div>
+            </div>
+          `;
+        } else {
+          enCol += `<p class="paper-paragraph">`;
+          viCol += `<p class="paper-paragraph">`;
+          (b.sentences || []).forEach(s => {
+            const tokenized = tokenizeSentenceWords(s.en, s.id);
+            enCol += `
+              <span class="sentence-token" id="dual_en_${s.id}"
+                    onmouseenter="syncDualHover('${s.id}', true)"
+                    onmouseleave="syncDualHover('${s.id}', false)"
+                    onclick="handleSentenceClick('${s.id}', event)">
+                ${tokenized}
+              </span>
+            `;
+            viCol += `
+              <span class="sentence-token" id="dual_vi_${s.id}"
+                    style="color: var(--text-primary); font-weight: 500;"
+                    onmouseenter="syncDualHover('${s.id}', true)"
+                    onmouseleave="syncDualHover('${s.id}', false)">
+                ${escapeHtml(s.vi)}&nbsp;
+              </span>
+            `;
+          });
+          enCol += `</p>`;
+          viCol += `</p>`;
+        }
+      });
+
+      html += `
+        <div class="academic-page-sheet" id="paper_page_${page.page_num}">
+          <div class="page-sheet-header">
+            <span class="badge-page-num">📄 TRANG ${page.page_num} / ${paper.page_count}</span>
+            <span style="font-size: 0.78rem; font-weight: 700; color: var(--text-muted);">BẢN GỐC TIẾNG ANH (TRÁI) ⟷ BẢN DỊCH TIẾNG VIỆT (PHẢI)</span>
+          </div>
+          <div class="dual-columns-grid" style="display: grid; grid-template-columns: 1fr 1fr; gap: 2rem;">
+            <div class="dual-side dual-en" style="border-right: 1px solid var(--border-color); padding-right: 1.5rem;">
+              <div class="col-indicator" style="margin-bottom: 0.75rem;">🇬🇧 BẢN GỐC TIẾNG ANH (CỘT TRÁI ➔ CỘT PHẢI)</div>
+              ${enCol}
+            </div>
+            <div class="dual-side dual-vi" style="padding: 1rem; background: var(--bg-hover); border-radius: var(--radius-sm);">
+              <div class="col-indicator" style="background: var(--accent-teal-light); color: var(--accent-teal); margin-bottom: 0.75rem;">🇻🇳 BẢN DỊCH TIẾNG VIỆT (KỸ THUẬT TRUYỀN THÔNG)</div>
+              ${viCol}
+            </div>
+          </div>
+        </div>
+      `;
+    });
+  }
+
+  paperContentArea.innerHTML = html;
 }
 
 function syncDualHover(sentenceId, isHover) {
@@ -605,12 +659,35 @@ function tokenizeSentenceWords(sentenceText, sentenceId) {
 
 // Find Sentence Object by ID
 function findSentenceDataById(sentenceId) {
+  if (paperSentenceIndex.has(sentenceId)) {
+    return paperSentenceIndex.get(sentenceId);
+  }
   const paper = currentPaperId === 'paper1' ? PAPER_1_DATA : PAPER_2_DATA;
-  for (const sec of paper.sections) {
-    for (const para of sec.paragraphs) {
-      for (let sIdx = 0; sIdx < para.sentences.length; sIdx++) {
-        if (`${para.id}_s${sIdx}` === sentenceId) {
-          return para.sentences[sIdx];
+  if (paper && paper.pages) {
+    for (const p of paper.pages) {
+      for (const col of [p.top_content, p.left_column, p.right_column]) {
+        if (!col) continue;
+        for (const b of col) {
+          if (!b.sentences) continue;
+          for (const s of b.sentences) {
+            if (s.id === sentenceId) {
+              paperSentenceIndex.set(sentenceId, s);
+              return s;
+            }
+          }
+        }
+      }
+    }
+  }
+  if (paper && paper.sections) {
+    for (const sec of paper.sections) {
+      if (!sec.paragraphs) continue;
+      for (const para of sec.paragraphs) {
+        if (!para.sentences) continue;
+        for (let sIdx = 0; sIdx < para.sentences.length; sIdx++) {
+          if (`${para.id}_s${sIdx}` === sentenceId || para.sentences[sIdx].id === sentenceId) {
+            return para.sentences[sIdx];
+          }
         }
       }
     }
