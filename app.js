@@ -682,7 +682,9 @@ function selectSentence(sentenceId, event) {
 
   updateSentenceInspector(sData.en, sData.vi);
   updateSentenceDock(sData.en, sData.vi);
-  sentenceDock.classList.add('dock-open');
+  if (!userClosedDock) {
+    sentenceDock.classList.add('dock-open');
+  }
 }
 
 function handleSentenceClick(sentenceId, event) {
@@ -926,6 +928,14 @@ function lookupDictionary(rawWord) {
 
 // Render Word in Inspector
 function renderWordInspector(data) {
+  const card = document.getElementById('wordInspectorCard');
+  if (card) {
+    card.style.display = 'flex';
+  }
+  const emptyHint = document.getElementById('sidebarEmptyHint');
+  if (emptyHint) emptyHint.style.display = 'none';
+  mainContainer.classList.remove('no-right-sidebar');
+
   document.getElementById('inspectWordName').innerText = data.word;
   document.getElementById('inspectWordIpa').innerText = data.ipa || '';
   document.getElementById('inspectWordPos').innerText = data.pos || 'Term';
@@ -942,6 +952,14 @@ function renderWordInspector(data) {
 
 // Update Sentence Inspector & Dock
 function updateSentenceInspector(en, vi) {
+  const card = document.getElementById('sentenceInspectorCard');
+  if (card) {
+    card.style.display = 'flex';
+  }
+  const emptyHint = document.getElementById('sidebarEmptyHint');
+  if (emptyHint) emptyHint.style.display = 'none';
+  mainContainer.classList.remove('no-right-sidebar');
+
   document.getElementById('sidebarSentenceEn').innerText = `"${en}"`;
   document.getElementById('sidebarSentenceVi').innerText = vi;
 }
@@ -951,8 +969,80 @@ function updateSentenceDock(en, vi) {
   dockEnText.innerText = en;
 }
 
+let userClosedDock = false;
 function closeDock() {
   sentenceDock.classList.remove('dock-open');
+  userClosedDock = true;
+}
+
+// Close individual inspector cards
+function closeWordInspector() {
+  const card = document.getElementById('wordInspectorCard');
+  if (card) {
+    card.style.display = 'none';
+  }
+  closeWordPopover();
+  activeWordData = null;
+  document.querySelectorAll('.word-token.word-selected').forEach(el => el.classList.remove('word-selected'));
+  checkSidebarEmptyState();
+}
+
+function closeSentenceInspector() {
+  const card = document.getElementById('sentenceInspectorCard');
+  if (card) {
+    card.style.display = 'none';
+  }
+  if (selectedSentenceId) {
+    const prev = document.getElementById(selectedSentenceId) || document.getElementById(`dual_en_${selectedSentenceId}`);
+    if (prev) prev.classList.remove('sentence-selected');
+    selectedSentenceId = null;
+  }
+  closeSentencePopover();
+  checkSidebarEmptyState();
+}
+
+function closeSentencePopover(event) {
+  if (event) event.stopPropagation();
+  sentencePopover.classList.remove('visible');
+  if (selectedSentenceId) {
+    const prev = document.getElementById(selectedSentenceId) || document.getElementById(`dual_en_${selectedSentenceId}`);
+    if (prev) prev.classList.remove('sentence-selected');
+    selectedSentenceId = null;
+  }
+}
+
+function checkSidebarEmptyState() {
+  const wCard = document.getElementById('wordInspectorCard');
+  const sCard = document.getElementById('sentenceInspectorCard');
+  const emptyHint = document.getElementById('sidebarEmptyHint');
+  if (wCard && sCard && emptyHint) {
+    const wHidden = (wCard.style.display === 'none');
+    const sHidden = (sCard.style.display === 'none');
+    emptyHint.style.display = (wHidden && sHidden) ? 'block' : 'none';
+  }
+}
+
+function toggleRightSidebar() {
+  mainContainer.classList.toggle('no-right-sidebar');
+  const isHidden = mainContainer.classList.contains('no-right-sidebar');
+  const btn = document.getElementById('btnToggleRightSidebar');
+  if (btn) {
+    btn.classList.toggle('active', isHidden);
+    btn.innerText = isHidden ? '📌 Hiện thanh tra từ' : '📌 Ẩn thanh tra từ';
+  }
+}
+
+function closeAllActivePopups() {
+  closeWordInspector();
+  closeSentenceInspector();
+  closeWordPopover();
+  sentencePopover.classList.remove('visible');
+  closeDock();
+  if (selectedSentenceId) {
+    const prev = document.getElementById(selectedSentenceId) || document.getElementById(`dual_en_${selectedSentenceId}`);
+    if (prev) prev.classList.remove('sentence-selected');
+    selectedSentenceId = null;
+  }
 }
 
 // Text-to-Speech audio pronunciation
@@ -1393,27 +1483,25 @@ function setupGlobalEvents() {
     sentencePopover.classList.remove('visible');
   });
 
-  // Escape key closes modals and docks
+  // Escape key closes modals, docks, and all inspectors
   window.addEventListener('keydown', (e) => {
     if (e.key === 'Escape') {
+      closeAllActivePopups();
       closeSavedWordsModal();
-      closeDock();
-      closeWordPopover();
-      sentencePopover.classList.remove('visible');
-      if (selectedSentenceId) {
-        const prev = document.getElementById(selectedSentenceId) || document.getElementById(`dual_en_${selectedSentenceId}`);
-        if (prev) prev.classList.remove('sentence-selected');
-        selectedSentenceId = null;
-      }
     }
   });
 
-  // Default inspection on load
-  const firstTerm = TELECOM_DICTIONARY['congestion'];
-  if (firstTerm) {
-    activeWordData = firstTerm;
-    renderWordInspector(firstTerm);
+  // Check initial state (keep clean on load)
+  const initialWordCard = document.getElementById('wordInspectorCard');
+  if (initialWordCard) {
+    // Hide initially until user clicks a word
+    initialWordCard.style.display = 'none';
   }
+  const initialSentCard = document.getElementById('sentenceInspectorCard');
+  if (initialSentCard) {
+    initialSentCard.style.display = 'none';
+  }
+  checkSidebarEmptyState();
 }
 
 // Utility: Escape HTML

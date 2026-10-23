@@ -78,6 +78,9 @@
           <button class="pill-btn" id="btnWideView" onclick="toggleWideView()" title="Ẩn các thanh bên để mở rộng 2 cột ra toàn màn hình" style="border: 1px dashed var(--primary); background: var(--bg-hover);">
             🖥️ Mở rộng 2 cột (Toàn màn hình)
           </button>
+          <button class="pill-btn" onclick="closeAllActivePopups()" title="Đóng tất cả các thẻ và popup dịch trên màn hình (hoặc bấm phím ESC)" style="border: 1px solid var(--border-color); color: var(--text-muted); background: var(--bg-surface);">
+            ✕ Đóng các thẻ dịch (ESC)
+          </button>
         </div>
       </div>
 
@@ -129,15 +132,22 @@
     </article>
 
     <!-- Right Sidebar: Interactive Word & Sentence Inspector -->
-    <aside class="right-sidebar">
-      
+    <aside class="right-sidebar" id="rightSidebar">
+      <div style="display: flex; justify-content: space-between; align-items: center; padding: 0.15rem 0.25rem 0.4rem 0.25rem; border-bottom: 1px dashed var(--border-color); margin-bottom: 0.25rem;">
+        <span style="font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);">Bảng Tra Cứu</span>
+        <button class="inspector-close-btn" onclick="toggleRightSidebar()" title="Thu gọn toàn bộ thanh tra cứu bên phải" style="width: 22px; height: 22px; font-size: 0.7rem;">✕</button>
+      </div>
+
       <!-- Word Dictionary Inspector -->
       <div class="inspector-card" id="wordInspectorCard">
         <div class="inspector-header">
           <div class="inspector-title">
             <span>🔍 Tra từ chuyên ngành</span>
           </div>
-          <span class="word-pos" id="inspectWordPos">Noun</span>
+          <div style="display: flex; align-items: center; gap: 0.4rem;">
+            <span class="word-pos" id="inspectWordPos">Noun</span>
+            <button class="inspector-close-btn" onclick="closeWordInspector()" title="Đóng thẻ tra từ này">✕</button>
+          </div>
         </div>
 
         <div class="word-title-row">
@@ -175,6 +185,9 @@
           <button class="control-btn" onclick="copyCurrentWord()">
             📋 Copy
           </button>
+          <button class="control-btn" onclick="closeWordInspector()" style="color: var(--accent-rose);" title="Đóng thẻ tra từ này">
+            ✕ Đóng
+          </button>
         </div>
       </div>
 
@@ -184,7 +197,10 @@
           <div class="inspector-title">
             <span>📝 Văn nghĩa câu đang chọn</span>
           </div>
-          <span class="badge-tag">Sát nghĩa KTTT</span>
+          <div style="display: flex; align-items: center; gap: 0.4rem;">
+            <span class="badge-tag">Sát nghĩa KTTT</span>
+            <button class="inspector-close-btn" onclick="closeSentenceInspector()" title="Đóng thẻ dịch câu này">✕</button>
+          </div>
         </div>
 
         <div style="font-size: 0.85rem; color: var(--text-muted); font-style: italic;" id="sidebarSentenceEn">
@@ -196,14 +212,21 @@
         </div>
       </div>
 
+      <div class="sidebar-empty-hint" id="sidebarEmptyHint" style="display: none; background: var(--bg-surface); border: 1px dashed var(--border-color); border-radius: var(--radius-md); padding: 1.25rem; text-align: center; font-size: 0.8rem; color: var(--text-muted); line-height: 1.5;">
+        <span>💡 Các thẻ tra cứu đã được đóng. Bạn hãy bấm vào câu hoặc từ bất kỳ trong bài báo để mở lại tra cứu.</span>
+      </div>
+
     </aside>
 
   </main>
 
   <!-- Floating Sentence Popover (Follows hover/click 1) -->
   <div class="sentence-popover" id="sentencePopover">
-    <div class="popover-label">
-      <span>📡 Bản dịch câu (Kỹ thuật Truyền thông):</span>
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 0.35rem;">
+      <div class="popover-label" style="margin-bottom: 0;">
+        <span>📡 Bản dịch câu (Kỹ thuật Truyền thông):</span>
+      </div>
+      <button class="pop-close-btn" onclick="closeSentencePopover(event)" title="Đóng popup">✕</button>
     </div>
     <div class="popover-en" id="popoverEnText"></div>
     <div class="popover-vi" id="popoverViText"></div>

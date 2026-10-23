@@ -675,6 +675,56 @@ body {
   color: var(--primary);
 }
 
+.inspector-close-btn {
+  background: var(--bg-hover);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.8rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  line-height: 1;
+  padding: 0;
+}
+
+.inspector-close-btn:hover {
+  background: var(--accent-rose-light);
+  color: var(--accent-rose);
+  border-color: var(--accent-rose);
+  transform: scale(1.1);
+}
+
+.pop-close-btn {
+  background: var(--bg-hover);
+  border: 1px solid var(--border-color);
+  color: var(--text-muted);
+  width: 24px;
+  height: 24px;
+  border-radius: var(--radius-full);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 0.75rem;
+  font-weight: 700;
+  cursor: pointer;
+  transition: all var(--transition-fast);
+  line-height: 1;
+  padding: 0;
+}
+
+.pop-close-btn:hover {
+  background: var(--accent-rose-light);
+  color: var(--accent-rose);
+  border-color: var(--accent-rose);
+  transform: scale(1.1);
+}
+
 .audio-btn {
   background: var(--bg-hover);
   border: 1px solid var(--border-color);
@@ -768,6 +818,7 @@ body {
 .sentence-popover.visible {
   opacity: 1;
   transform: translateY(0);
+  pointer-events: auto;
 }
 
 .sentence-popover .popover-label {
@@ -1279,6 +1330,15 @@ body {
 .main-layout.wide-reading-mode .journal-two-columns {
   column-count: 2 !important;
   column-gap: 3.5rem !important;
+}
+
+/* Collapsed Right Sidebar state */
+.main-layout.no-right-sidebar {
+  grid-template-columns: 260px 1fr !important;
+}
+
+.main-layout.no-right-sidebar .right-sidebar {
+  display: none !important;
 }
 
 /* Academic Figures */
